@@ -1,0 +1,145 @@
+import path from "node:path";
+import { promises as fs } from "node:fs";
+import { notFound } from "next/navigation";
+import { projectsRoot, getScannedProjects } from "@/lib/scan.js";
+import { getProjectDetail } from "@/lib/detail.js";
+import { getProjectActivity, getDailyActivity } from "@/lib/activity.js";
+import { getSessionsByProject } from "@/lib/sessions.js";
+import { getMeta } from "@/lib/project-meta.js";
+import { listClients } from "@/lib/clients.js";
+import { countOutdated } from "@/lib/external/npm-versions.js";
+import { getXkcd } from "@/lib/external/xkcd.js";
+
+import BriefingHeader from "@/components/project/header.jsx";
+import Vitals from "@/components/project/vitals.jsx";
+import Timeline from "@/components/project/timeline.jsx";
+import SessionsList from "@/components/project/sessions-list.jsx";
+import Velocity from "@/components/project/velocity.jsx";
+import Focus from "@/components/project/focus.jsx";
+import RecentlyDone from "@/components/project/recently-done.jsx";
+import RecentCommits from "@/components/project/recent-commits.jsx";
+import Notes from "@/components/project/notes.jsx";
+import Module from "@/components/hud/module.jsx";
+import TodoKanban from "@/components/todo-kanban.jsx";
+import AddTodo from "@/components/add-todo.jsx";
+import PromptPanel from "@/components/claude-prompt/prompt-panel.jsx";
+
+export const dynamic = "force-dynamic";
+
+export default async function BriefingPage({ params }) {
+  const { slug } = await params;
+  const segments = (slug || []).map(decodeURIComponent);
+  const rel = segments.join("/");
+
+  // Path-traversal guard.
+  const root = path.resolve(projectsRoot());
+  const resolved = path.resolve(path.join(root, ...segments));
+  const within = resolved === root || resolved.startsWith(root + path.sep);
+  if (!within) notFound();
+
+  // Run heavy fetches in parallel — getScannedProjects is cache()d so the
+  // layout's call is reused here.
+  const [detail, projects, activity, daily] = await Promise.all([
+    getProjectDetail(resolved),
+    getScannedProjects(),
+    getProjectActivity(resolved, { sinceDays: 60, maxTotal: 80 }),
+    getDailyActivity(60),
+  ]);
+
+  const meta = getMeta(rel);
+  const clients = listClients();
+
+  // Per-project daily activity for sparkline.
+  const ourProject = projects.find((p) => p?.dir === resolved);
+  const sessions = ourProject ? (await getSessionsByProject([ourProject]))[ourProject.rel] || [] : [];
+
+  // Filter daily activity to just this project's events (commit + session counts only).
+  // Cheap: rebuild from the activity feed we already have.
+  const since60 = Date.now() - 60 * 86400 * 1000;
+  const projDailyMap = new Map();
+  for (const e of activity) {
+    if (e.type === "status") continue;
+    const t = +new Date(e.ts);
+    if (t < since60) continue;
+    const k = new Date(t).toISOString().slice(0, 10);
+    projDailyMap.set(k, (projDailyMap.get(k) || 0) + 1);
+  }
+  const projDaily = daily.map((d) => ({ ...d, count: projDailyMap.get(d.date) || 0 }));
+
+  // Commits in last 7 days for vitals tile.
+  const since7 = Date.now() - 7 * 86400 * 1000;
+  const commits7d = activity.filter((e) => e.type === "commit" && +new Date(e.ts) >= since7).length;
+
+  // DEPS / OUTDATED — only if this project has a package.json. Read silently.
+  let deps = null;
+  try {
+    const raw = await fs.readFile(path.join(resolved, "package.json"), "utf8");
+    const pkg = JSON.parse(raw);
+    deps = await countOutdated(pkg);
+  } catch { /* no package.json or unreadable — skip */ }
+
+  // Briefing easter eggs (parallel, non-blocking).
+  const [xkcdRes] = await Promise.allSettled([getXkcd()]);
+  const xkcd = xkcdRes.status === "fulfilled" ? xkcdRes.value : null;
+
+  // Branch from latest session.
+  const latestSession = sessions.find((s) => s.gitBranch) || sessions[0];
+  const lastSessionAt = sessions.length ? sessions[0].lastActivityAt : null;
+
+  return (
+    <div className="flex flex-col gap-6">
+      <BriefingHeader
+        detail={detail}
+        rel={rel}
+        branch={latestSession?.gitBranch || (detail?.git?.isRepo ? "HEAD" : null)}
+        lastSessionAt={lastSessionAt}
+        meta={meta}
+        clients={clients}
+      />
+
+      <Vitals
+        detail={detail}
+        sessions={sessions}
+        commits7d={commits7d}
+        dailyActivity={projDaily.slice(-14)}
+        deps={deps}
+      />
+
+      <PromptPanel cwd={resolved} projectSlug={rel} />
+
+      <div className="grid gap-4 md:grid-cols-12">
+        <div className="md:col-span-8">
+          <Timeline events={activity} />
+        </div>
+        <div className="md:col-span-4 flex flex-col gap-4">
+          <SessionsList sessions={sessions} cwd={resolved} />
+          <Velocity recentlyDone={detail.recentlyDone || []} commits={detail.git?.commits || []} />
+        </div>
+      </div>
+
+      <Module title="TO DO" voice="briefing" caption={`${detail?.todoCounts?.open ?? 0} open · ${detail?.todoCounts?.done ?? 0} done`}>
+        <div className="mb-4">
+          <AddTodo rel={rel} />
+        </div>
+        <TodoKanban
+          items={(detail.todos || []).map((t) => ({
+            ...t,
+            projectName: detail.name,
+            projectRel: rel,
+            projectPriority: detail.priority,
+          }))}
+          showProject={false}
+        />
+      </Module>
+
+      <Focus detail={detail} />
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <RecentlyDone items={detail.recentlyDone || []} />
+        <RecentCommits git={detail.git} />
+      </div>
+
+      <Notes statusMarkdown={detail.statusMarkdown} readme={detail.readme} xkcd={xkcd} />
+    </div>
+  );
+}

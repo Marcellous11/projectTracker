@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Session watcher launchd agent (Phase 10).
+
+  Auto-starts scripts/session-watcher.js at login and restarts it on crash.
+  The two __REPO__ placeholders + the node path are rewritten by the
+  install snippet in the README before bootstrapping into launchd.
+
+  Install / uninstall: see README, section "Daemon".
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.mcurtis.project-tracker-watcher</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/local/bin/node</string>
+    <string>__REPO__/scripts/session-watcher.js</string>
+  </array>
+
+  <key>WorkingDirectory</key>
+  <string>__REPO__</string>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin</string>
+  </dict>
+
+  <key>RunAtLoad</key>
+  <true/>
+
+  <key>KeepAlive</key>
+  <true/>
+
+  <key>ThrottleInterval</key>
+  <integer>5</integer>
+
+  <key>StandardOutPath</key>
+  <string>__REPO__/data/watcher.log</string>
+
+  <key>StandardErrorPath</key>
+  <string>__REPO__/data/watcher.err</string>
+</dict>
+</plist>

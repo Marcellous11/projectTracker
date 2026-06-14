@@ -1,0 +1,22 @@
+services:
+  project-tracker:
+    build: .
+    image: project-tracker
+    container_name: project-tracker
+    ports:
+      # host:container — open http://localhost:4317
+      - "4317:3000"
+    # Reach scripts/prompt-bridge.js on the host (127.0.0.1:4318).
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      PROJECTS_ROOT: /projects
+    volumes:
+      # Mount the projects folder (the parent of this dir) read-write so the
+      # dashboard can append to STATUS.md files (e.g. add new to-dos).
+      - ../:/projects
+      # SQLite DB file — survives container rebuilds. See lib/db.js.
+      - ./data:/app/data
+    # Keep it running across crashes and machine reboots (as long as the
+    # Docker daemon / Docker Desktop is started).
+    restart: unless-stopped
