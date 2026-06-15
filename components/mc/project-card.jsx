@@ -45,23 +45,27 @@ export default function ProjectCard({ p, itineraryCount = 0 }) {
       {summary && (
         <p className="mt-2 line-clamp-2 text-[13px] leading-snug text-muted-foreground">{summary}</p>
       )}
-      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[12px] text-hud-ink-dim">
-        {prs > 0 && (
-          <span className="inline-flex items-center gap-1.5">
-            <GitPullRequest size={14} strokeWidth={1.75} aria-hidden />
-            <span className="tabular-nums">{prs}</span> PR{prs > 1 ? "s" : ""}
-          </span>
-        )}
-        {itineraryCount > 0 && (
-          <span className="inline-flex items-center gap-1.5">
-            <ListChecks size={14} strokeWidth={1.75} aria-hidden />
-            <span className="tabular-nums">{itineraryCount}</span> itinerary
-          </span>
+      <div className="mt-3 flex flex-col gap-1.5 text-[12px] text-hud-ink-dim">
+        {(prs > 0 || itineraryCount > 0) && (
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
+            {prs > 0 && (
+              <span className="inline-flex items-center gap-1.5">
+                <GitPullRequest size={14} strokeWidth={1.75} aria-hidden />
+                <span className="tabular-nums">{prs}</span> PR{prs > 1 ? "s" : ""}
+              </span>
+            )}
+            {itineraryCount > 0 && (
+              <span className="inline-flex items-center gap-1.5">
+                <ListChecks size={14} strokeWidth={1.75} aria-hidden />
+                <span className="tabular-nums">{itineraryCount}</span> itinerary
+              </span>
+            )}
+          </div>
         )}
         {last && (
           <span className="inline-flex items-center gap-1.5">
             <Clock3 size={14} strokeWidth={1.75} aria-hidden />
-            {last} ago
+            Active {last} ago
           </span>
         )}
       </div>
