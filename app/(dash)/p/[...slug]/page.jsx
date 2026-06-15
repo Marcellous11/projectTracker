@@ -1,27 +1,18 @@
 import path from "node:path";
-import { promises as fs } from "node:fs";
 import { notFound } from "next/navigation";
 import { projectsRoot } from "@/lib/scan.js";
 import { getProjectDetail } from "@/lib/detail.js";
-import { getProjectActivity, getDailyActivity } from "@/lib/activity.js";
 import { getMeta } from "@/lib/project-meta.js";
 import { getGithubByProject } from "@/lib/github-state.js";
 import { getTrackedProjects } from "@/lib/tracked-projects.js";
-import { countOutdated } from "@/lib/external/npm-versions.js";
-import { getXkcd } from "@/lib/external/xkcd.js";
 
-import GithubBriefing from "@/components/project/github-briefing.jsx";
+import GithubBriefing, {
+  Summary,
+  RecentCommitsCard,
+  AtAGlance,
+} from "@/components/project/github-briefing.jsx";
 import BriefingHeader from "@/components/project/header.jsx";
-import Vitals from "@/components/project/vitals.jsx";
-import Timeline from "@/components/project/timeline.jsx";
-import Velocity from "@/components/project/velocity.jsx";
-import Focus from "@/components/project/focus.jsx";
-import RecentlyDone from "@/components/project/recently-done.jsx";
-import RecentCommits from "@/components/project/recent-commits.jsx";
 import Notes from "@/components/project/notes.jsx";
-import Module from "@/components/hud/module.jsx";
-import TodoKanban from "@/components/todo-kanban.jsx";
-import AddTodo from "@/components/add-todo.jsx";
 
 export const dynamic = "force-dynamic";
 
@@ -46,46 +37,28 @@ export default async function BriefingPage({ params }) {
   const within = resolved === root || resolved.startsWith(root + path.sep);
   if (!within) notFound();
 
-  // Run heavy fetches in parallel.
-  const [detail, activity, daily] = await Promise.all([
-    getProjectDetail(resolved),
-    getProjectActivity(resolved, { sinceDays: 60, maxTotal: 80 }),
-    getDailyActivity(60),
-  ]);
-
+  const detail = await getProjectDetail(resolved);
   const meta = getMeta(rel);
 
-  // "View on GitHub" link for local projects that map to a tracked repo.
-  const githubUrl = getGithubByProject()[rel]?.url || null;
+  // GitHub snapshot for this local project (keyed by rel): "View on GitHub"
+  // link + the AI "where it stands" summary + open-PR count.
+  const ghEntry = getGithubByProject()[rel] || null;
+  const githubUrl = ghEntry?.url || null;
+  const aiSummary = ghEntry?.aiSummary || null;
+  const prCount = Array.isArray(ghEntry?.openPRs) ? ghEntry.openPRs.length : 0;
+  const prsUrl = githubUrl ? `${githubUrl}/pulls` : null;
 
-  // Filter daily activity to just this project's events (commit + session counts only).
-  // Cheap: rebuild from the activity feed we already have.
-  const since60 = Date.now() - 60 * 86400 * 1000;
-  const projDailyMap = new Map();
-  for (const e of activity) {
-    if (e.type === "status") continue;
-    const t = +new Date(e.ts);
-    if (t < since60) continue;
-    const k = new Date(t).toISOString().slice(0, 10);
-    projDailyMap.set(k, (projDailyMap.get(k) || 0) + 1);
-  }
-  const projDaily = daily.map((d) => ({ ...d, count: projDailyMap.get(d.date) || 0 }));
+  // Last 5 commits from the local git history, normalized to the shared card shape.
+  const commits = (detail.git?.commits || []).slice(0, 5).map((c) => ({
+    sha: c.short,
+    message: c.subject,
+    date: c.dateISO,
+    url: githubUrl ? `${githubUrl}/commit/${c.hash}` : undefined,
+  }));
 
-  // Commits in last 7 days for vitals tile.
-  const since7 = Date.now() - 7 * 86400 * 1000;
-  const commits7d = activity.filter((e) => e.type === "commit" && +new Date(e.ts) >= since7).length;
-
-  // DEPS / OUTDATED — only if this project has a package.json. Read silently.
-  let deps = null;
-  try {
-    const raw = await fs.readFile(path.join(resolved, "package.json"), "utf8");
-    const pkg = JSON.parse(raw);
-    deps = await countOutdated(pkg);
-  } catch { /* no package.json or unreadable — skip */ }
-
-  // Briefing easter eggs (parallel, non-blocking).
-  const [xkcdRes] = await Promise.allSettled([getXkcd()]);
-  const xkcd = xkcdRes.status === "fulfilled" ? xkcdRes.value : null;
+  // Summary fallback: STATUS.md next-action when there's no AI summary.
+  const fallback =
+    detail.nextAction?.trim() || "No summary yet — will generate on the next sync.";
 
   return (
     <div className="flex flex-col gap-6">
@@ -97,45 +70,18 @@ export default async function BriefingPage({ params }) {
         githubUrl={githubUrl}
       />
 
-      <Vitals
-        detail={detail}
-        commits7d={commits7d}
-        dailyActivity={projDaily.slice(-14)}
-        deps={deps}
+      <Summary aiSummary={aiSummary} fallback={fallback} />
+
+      <RecentCommitsCard commits={commits} />
+
+      <AtAGlance
+        todoCount={detail?.todoCounts?.open ?? 0}
+        todosRel={rel}
+        prCount={prCount}
+        prsUrl={prsUrl}
       />
 
-      <div className="grid gap-4 md:grid-cols-12">
-        <div className="md:col-span-8">
-          <Timeline events={activity} />
-        </div>
-        <div className="md:col-span-4 flex flex-col gap-4">
-          <Velocity recentlyDone={detail.recentlyDone || []} commits={detail.git?.commits || []} />
-        </div>
-      </div>
-
-      <Module title="TO DO" voice="briefing" caption={`${detail?.todoCounts?.open ?? 0} open · ${detail?.todoCounts?.done ?? 0} done`}>
-        <div className="mb-4">
-          <AddTodo rel={rel} />
-        </div>
-        <TodoKanban
-          items={(detail.todos || []).map((t) => ({
-            ...t,
-            projectName: detail.name,
-            projectRel: rel,
-            projectPriority: detail.priority,
-          }))}
-          showProject={false}
-        />
-      </Module>
-
-      <Focus detail={detail} />
-
-      <div className="grid gap-4 md:grid-cols-2">
-        <RecentlyDone items={detail.recentlyDone || []} />
-        <RecentCommits git={detail.git} />
-      </div>
-
-      <Notes statusMarkdown={detail.statusMarkdown} readme={detail.readme} xkcd={xkcd} />
+      <Notes statusMarkdown={detail.statusMarkdown} readme={detail.readme} />
     </div>
   );
 }
