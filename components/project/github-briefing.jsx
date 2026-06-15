@@ -166,7 +166,7 @@ export function AtAGlance({ itineraryCount, prCount, prsUrl }) {
           </a>
         )}
         <a
-          href={prsUrl || "/repos"}
+          href={prsUrl || "#"}
           {...(prsUrl ? { target: "_blank", rel: "noopener noreferrer" } : {})}
           className="inline-flex items-baseline gap-1.5 text-hud-ink-dim hover:text-foreground"
         >
