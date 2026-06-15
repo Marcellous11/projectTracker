@@ -143,6 +143,14 @@
   }
 }
 
+/* Mobile guard: nothing should be able to scroll the whole page sideways.
+   Wide widgets that legitimately need room scroll inside their own module. */
+html,
+body {
+  overflow-x: clip; /* clip (not hidden) so it doesn't break position: sticky */
+  max-width: 100%;
+}
+
 /* Rendered markdown (STATUS.md body, README) inside the detail panel. */
 .md-body {
   font-size: 0.875rem;
@@ -213,6 +221,8 @@
 /* Module shell — thin border with very subtle inner top highlight. */
 .hud-module {
   position: relative;
+  min-width: 0;
+  max-width: 100%;
   border: 1px solid var(--hud-border);
   border-radius: 6px;
   background:
