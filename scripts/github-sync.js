@@ -55,10 +55,18 @@ async function fetchRepo(entry) {
     const branch = info.default_branch;
 
     const [commits, pulls] = await Promise.all([
-      gh(`/repos/${repo}/commits?sha=${encodeURIComponent(branch)}&per_page=1`).catch(() => []),
+      gh(`/repos/${repo}/commits?sha=${encodeURIComponent(branch)}&per_page=15`).catch(() => []),
       gh(`/repos/${repo}/pulls?state=open&per_page=20&sort=updated&direction=desc`).catch(() => []),
     ]);
-    const head = Array.isArray(commits) ? commits[0] : null;
+    const commitList = Array.isArray(commits) ? commits : [];
+    const head = commitList[0] || null;
+    const recentCommits = commitList.map((c) => ({
+      sha: (c.sha || "").slice(0, 7),
+      message: (c.commit?.message || "").split("\n")[0].slice(0, 140),
+      author: c.commit?.author?.name || c.author?.login || "?",
+      date: c.commit?.author?.date || null,
+      url: c.html_url,
+    }));
 
     let ci = { state: "none", total: 0, failed: 0, pending: 0 };
     if (head?.sha) {
@@ -88,6 +96,7 @@ async function fetchRepo(entry) {
         updatedAt: p.updated_at,
         url: p.html_url,
       })),
+      recentCommits,
       ci,
       url: info.html_url,
       fetchedAt: new Date().toISOString(),

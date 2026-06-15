@@ -5,9 +5,12 @@ import { projectsRoot } from "@/lib/scan.js";
 import { getProjectDetail } from "@/lib/detail.js";
 import { getProjectActivity, getDailyActivity } from "@/lib/activity.js";
 import { getMeta } from "@/lib/project-meta.js";
+import { getGithubByProject } from "@/lib/github-state.js";
+import { getTrackedProjects } from "@/lib/tracked-projects.js";
 import { countOutdated } from "@/lib/external/npm-versions.js";
 import { getXkcd } from "@/lib/external/xkcd.js";
 
+import GithubBriefing from "@/components/project/github-briefing.jsx";
 import BriefingHeader from "@/components/project/header.jsx";
 import Vitals from "@/components/project/vitals.jsx";
 import Timeline from "@/components/project/timeline.jsx";
@@ -27,6 +30,16 @@ export default async function BriefingPage({ params }) {
   const segments = (slug || []).map(decodeURIComponent);
   const rel = segments.join("/");
 
+  // GitHub-only tracked repos use a `gh:owner/name` rel with no local checkout.
+  // They get a GitHub-sourced briefing instead of the filesystem one (and skip
+  // the path-traversal guard, which only applies to local paths).
+  if (rel.startsWith("gh:")) {
+    const projects = await getTrackedProjects();
+    const project = projects.find((p) => p.rel === rel);
+    if (!project) notFound();
+    return <GithubBriefing project={project} rel={rel} meta={getMeta(rel)} />;
+  }
+
   // Path-traversal guard.
   const root = path.resolve(projectsRoot());
   const resolved = path.resolve(path.join(root, ...segments));
@@ -41,6 +54,9 @@ export default async function BriefingPage({ params }) {
   ]);
 
   const meta = getMeta(rel);
+
+  // "View on GitHub" link for local projects that map to a tracked repo.
+  const githubUrl = getGithubByProject()[rel]?.url || null;
 
   // Filter daily activity to just this project's events (commit + session counts only).
   // Cheap: rebuild from the activity feed we already have.
@@ -78,6 +94,7 @@ export default async function BriefingPage({ params }) {
         rel={rel}
         branch={detail?.git?.isRepo ? "HEAD" : null}
         meta={meta}
+        githubUrl={githubUrl}
       />
 
       <Vitals

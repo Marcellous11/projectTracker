@@ -29,7 +29,7 @@ function stalenessTone(d) {
  * Per-project briefing header. Hex codename + name + pills + a quiet
  * coordinate-style caption (branch · short-cwd · last contact).
  */
-export default function BriefingHeader({ detail, rel, branch = null, lastSessionAt = null, meta = null }) {
+export default function BriefingHeader({ detail, rel, branch = null, lastSessionAt = null, meta = null, githubUrl = null }) {
   const tone = statusTone(detail?.status);
   const stTone = stalenessTone(detail?.staleDays);
   const displayCodename = meta?.codename || codename(rel);
@@ -54,6 +54,16 @@ export default function BriefingHeader({ detail, rel, branch = null, lastSession
             <Pill tone={stTone === "green" ? "active" : stTone === "warm" ? "paused" : stTone === "hot" ? "blocked" : "done"}>
               {detail.staleDays}d stale
             </Pill>
+          )}
+          {githubUrl && (
+            <a
+              href={githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="h-7 inline-flex items-center rounded-lg border border-hud-border px-2.5 text-[10px] hud-mono uppercase tracking-[0.18em] text-hud-ink-dim hover:text-foreground hover:border-hud-border-strong transition-colors"
+            >
+              View on GitHub ↗
+            </a>
           )}
           <MetaEditor rel={rel} meta={meta} />
         </div>

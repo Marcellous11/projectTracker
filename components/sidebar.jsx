@@ -168,9 +168,10 @@ export default function Sidebar({ projects, total, root, variant = "desktop", on
             // Locally-checked-out repos open their briefing; GitHub-only repos
             // (no local checkout) have no briefing, so link to the repo on
             // GitHub (new tab) — or /repos if we have no url.
-            const githubOnly = p.hasLocal === false;
-            const external = githubOnly && !!p.github?.url;
-            const href = githubOnly ? (p.github?.url || "/repos") : hrefFor(p.rel);
+            // Every tracked project (local OR GitHub-only) has its own internal
+            // briefing page at /p/<rel>. The "View on GitHub" link lives on that
+            // page now, not here.
+            const href = hrefFor(p.rel);
             const active = pathname === href;
             const dim = p.status === "paused" || p.status === "done";
             return (
@@ -178,8 +179,6 @@ export default function Sidebar({ projects, total, root, variant = "desktop", on
                 <Link
                   href={href}
                   prefetch={false}
-                  target={external ? "_blank" : undefined}
-                  rel={external ? "noopener noreferrer" : undefined}
                   className={cn(
                     "relative flex items-center gap-2 border-l-2 px-2.5 py-1.5 mx-1.5 transition-colors",
                     statusBorderClass(p.status),
