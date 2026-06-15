@@ -1,4 +1,5 @@
 import Module from "@/components/hud/module.jsx";
+import { GitCommitHorizontal } from "lucide-react";
 
 function fmtDate(iso) {
   if (!iso) return "—";
@@ -13,14 +14,15 @@ export default function RecentCommits({ git }) {
 
   return (
     <Module
-      title="RECENT COMMITS"
-      voice="signals"
-      caption={isRepo ? `git log · ${commits.length} shown` : "not a git repository"}
+      title="Recent commits"
+      voice="briefing"
+      icon={GitCommitHorizontal}
+      caption={isRepo ? `git log · ${commits.length} shown` : "Not a git repository"}
     >
       {!isRepo ? (
-        <p className="hud-mono text-[11px] text-hud-ink-dim">// not a git repository</p>
+        <p className="text-[13px] text-hud-ink-dim">Not a git repository.</p>
       ) : commits.length === 0 ? (
-        <p className="hud-mono text-[11px] text-hud-ink-dim">// no commits found</p>
+        <p className="text-[13px] text-hud-ink-dim">No commits found.</p>
       ) : (
         <ul className="flex flex-col gap-2">
           {commits.map((c) => (

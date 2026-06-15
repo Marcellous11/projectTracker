@@ -22,7 +22,7 @@ export default function ActivityHeatmap({ daily = [] }) {
   if (!daily.length) {
     return (
       <Module title="ACTIVITY HEATMAP" voice="ops" caption="84-day signal">
-        <p className="hud-mono text-[11px] text-hud-ink-dim">// no activity in window</p>
+        <p className="text-[13px] text-hud-ink-dim">No activity in window</p>
       </Module>
     );
   }

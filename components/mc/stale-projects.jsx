@@ -24,7 +24,7 @@ export default function StaleProjects({ projects }) {
       }
     >
       {items.length === 0 ? (
-        <p className="hud-mono text-[11px] text-hud-ink-dim">// nothing going cold</p>
+        <p className="text-[13px] text-hud-ink-dim">Nothing going cold</p>
       ) : (
         <ul className="flex flex-col">
           {items.map((p) => {

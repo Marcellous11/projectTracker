@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --radius: 0.625rem;
+  --radius: 1rem; /* rounder, tactile (Organic Soft) */
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -40,51 +40,51 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  /* Organic Soft UI — Option A (Dark Organic Dashboard). Calm, tactile,
+     nature-muted greens with soft elevation. */
+  --background: #172126;          /* deep */
+  --foreground: #E7ECE7;
+  --card: #202C30;                /* raised */
+  --card-foreground: #E7ECE7;
+  --popover: #232F33;
+  --popover-foreground: #E7ECE7;
+  --primary: #A9D99B;             /* green accent */
+  --primary-foreground: #16201B;
+  --secondary: #2B373A;           /* surface soft */
+  --secondary-foreground: #E7ECE7;
+  --muted: #2B373A;
+  --muted-foreground: #AAB5AD;    /* text secondary */
+  --accent: #2B373A;
+  --accent-foreground: #E7ECE7;
+  --destructive: #E0926E;
+  --border: #3B4749;              /* subtle */
+  --input: #3B4749;
+  --ring: #BFFFD7;                /* mint glow */
+  --sidebar: #1B2629;
+  --sidebar-foreground: #E7ECE7;
+  --sidebar-primary: #A9D99B;
+  --sidebar-primary-foreground: #16201B;
+  --sidebar-accent: #2B373A;
+  --sidebar-accent-foreground: #E7ECE7;
+  --sidebar-border: #3B4749;
+  --sidebar-ring: #BFFFD7;
 
-  --warm: oklch(0.8 0.13 75);
-  --hot: oklch(0.68 0.19 22);
-  --green: oklch(0.76 0.15 155);
+  --warm: #D8B77F;                /* warm sand */
+  --hot: #E9B38D;                 /* soft peach — alerts */
+  --green: #A9D99B;
 
-  /* HUD chrome — Vine FX / The Amateur-coded.
-     Borders are thin, glows are subtle, motion is signal not decoration. */
-  --hud-border:        oklch(1 0 0 / 14%);
-  --hud-border-strong: oklch(1 0 0 / 28%);
-  --hud-grid:          oklch(1 0 0 / 6%);
-  --hud-glow-green:    oklch(0.76 0.15 155 / 35%);
-  --hud-glow-hot:      oklch(0.68 0.19 22  / 35%);
-  --hud-glow-warm:     oklch(0.80 0.13 75  / 30%);
-  --hud-glow-blue:     oklch(0.70 0.14 230 / 35%);
-  --hud-ink-dim:       oklch(0.708 0 0 / 70%);
-  --hud-label:         oklch(0.708 0 0 / 90%);
+  /* HUD chrome — softened for Organic Soft */
+  --hud-border:        rgba(255,255,255,0.08);
+  --hud-border-strong: rgba(255,255,255,0.18);
+  --hud-glow-green:    rgba(169,217,155,0.35);
+  --hud-glow-hot:      rgba(233,179,141,0.30);
+  --hud-glow-warm:     rgba(216,183,127,0.30);
+  --hud-glow-blue:     rgba(158,190,204,0.30);
+  --hud-ink-dim:       #AAB5AD;
+  --hud-label:         #C7D0C8;
+  --mint-glow:         #BFFFD7;
 
-  /* Signals dialect — Claude session events */
-  --color-blue:        oklch(0.70 0.14 230);
+  --color-blue:        #9EBECC;
 }
 
 @theme inline {
@@ -237,12 +237,23 @@ body {
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.01em;
 }
+/* Section/title label — clean readable sans (Organic Soft). Used as a small
+   muted caption or, when sized up at the call site, as a section heading. */
 .hud-label {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  font-size: 10px;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  text-transform: none;
+  letter-spacing: 0.01em;
+  font-size: 13px;
+  font-weight: 500;
   color: var(--hud-label);
+}
+/* Section heading — H3-ish, normal case, readable sans. */
+.soft-title {
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--foreground);
 }
 
 /* Module shell — thin border with very subtle inner top highlight. */
@@ -352,36 +363,19 @@ textarea.hud-input { height: auto; }
 .hud-ring-flash   { animation: hud-ring 600ms ease-out forwards; }
 .hud-fade-in      { animation: hud-fade-in 200ms ease-out forwards; }
 
-/* Subtle radar-style grid — Mission Control surface only. */
-.hud-grid-bg {
-  background-image:
-    linear-gradient(var(--hud-grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--hud-grid) 1px, transparent 1px);
-  background-size: 48px 48px;
-  opacity: 1;
-}
-.hud-grid-bg::before {
-  /* fades grid alpha to ~2% effective. */
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, oklch(0.145 0 0 / 60%), transparent 30%, transparent 70%, oklch(0.145 0 0 / 60%));
-  pointer-events: none;
-}
-
-/* Status pills — uppercase mono, thin border, color tracks signal palette. */
+/* Status pills — soft rounded, normal case, color tracks signal palette. */
 .pill {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   border: 1px solid currentColor;
-  border-radius: 2px;
-  padding: 2px 6px;
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  line-height: 1.2;
+  border-radius: 999px;
+  padding: 3px 11px;
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
+  line-height: 1.3;
 }
 .pill-active    { color: var(--green); border-color: oklch(from var(--green) l c h / 40%); }
 .pill-blocked   { color: var(--hot);   border-color: oklch(from var(--hot)   l c h / 40%); }
@@ -390,14 +384,14 @@ textarea.hud-input { height: auto; }
 .pill-untracked { color: var(--muted-foreground); border-color: var(--border); border-style: dashed; }
 .pill-blue      { color: var(--color-blue); border-color: oklch(from var(--color-blue) l c h / 40%); }
 
-/* Hexagon-clipped codename badge — used in briefing header + sidebar hover. */
+/* Soft rounded badge (formerly the hex codename badge). */
 .hex-pill {
-  clip-path: polygon(8% 0, 92% 0, 100% 50%, 92% 100%, 8% 100%, 0 50%);
+  border-radius: 999px;
   padding: 3px 12px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 /* Marquee outer — clips the duplicated content; inner animates */
@@ -409,12 +403,6 @@ textarea.hud-input { height: auto; }
 .hud-marquee-inner { display: inline-flex; padding-right: 100%; }
 .hud-marquee:hover .hud-marquee-inner { animation-play-state: paused; }
 
-/* Dialect header tweaks
- * ops: plain uppercase mono label
- * briefing: same, but quieter weight + coordinate caption below
- * signals: prefixed with // and slightly tighter tracking
- */
-.hud-voice-signals .hud-module-header > .hud-label::before { content: "// "; opacity: 0.7; }
 
 
 /* ──────────────────────────────────────────────────────────────────────────
@@ -492,4 +480,127 @@ main .flex > * {
     max-width: none !important;
     width: auto !important;
   }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   ORGANIC SOFT UI — soft elevation + tactile surfaces (Option A)
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* Raised physical tile — used for cards/panels. */
+.soft-card {
+  border-radius: 24px;
+  border: 1px solid var(--hud-border);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.012)),
+    var(--card);
+  box-shadow:
+    0 22px 45px rgba(0, 0, 0, 0.35),
+    0 6px 16px rgba(0, 0, 0, 0.26),
+    inset 0 1px 1px rgba(255, 255, 255, 0.06);
+}
+.soft-card-hover {
+  transition: box-shadow 160ms ease, transform 160ms ease;
+}
+.soft-card-hover:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 26px 55px rgba(0, 0, 0, 0.4),
+    0 8px 20px rgba(0, 0, 0, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.08);
+}
+
+/* Give the HUD module shell the same soft, raised feel. */
+.hud-module {
+  border-radius: 22px;
+  border-color: var(--hud-border);
+  box-shadow:
+    0 18px 38px rgba(0, 0, 0, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.05);
+}
+
+/* Recessed, tactile inputs with a soft mint focus glow. */
+.hud-input {
+  border-radius: 16px;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.22);
+}
+.hud-input:focus,
+.hud-input:focus-visible {
+  border-color: var(--mint-glow);
+  box-shadow:
+    0 0 0 3px rgba(191, 255, 215, 0.22),
+    inset 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+
+/* ── Buttons (Organic Soft) ─────────────────────────────────────────────── */
+/* Primary — raised pill with the green gradient, dark text, soft shadow. */
+.btn-soft {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 999px;
+  border: none;
+  padding: 0.5rem 1.15rem;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 140ms ease, box-shadow 140ms ease, filter 140ms ease;
+}
+.btn-soft-primary {
+  background: linear-gradient(180deg, #B9E9C5, #8FCFA4);
+  color: #16201B;
+  box-shadow:
+    0 10px 22px rgba(0, 0, 0, 0.32),
+    0 2px 6px rgba(0, 0, 0, 0.22),
+    inset 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+.btn-soft-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.03);
+  box-shadow:
+    0 14px 28px rgba(0, 0, 0, 0.38),
+    0 3px 8px rgba(0, 0, 0, 0.26),
+    inset 0 1px 1px rgba(255, 255, 255, 0.45);
+}
+.btn-soft-primary:active:not(:disabled) { transform: translateY(0); }
+/* Blue variant for secondary actions (e.g. Send to Monday). */
+.btn-soft-blue {
+  background: linear-gradient(180deg, #B9D4E0, #9EBECC);
+  color: #16201B;
+  box-shadow:
+    0 10px 22px rgba(0, 0, 0, 0.32),
+    0 2px 6px rgba(0, 0, 0, 0.22),
+    inset 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+.btn-soft-blue:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.03); }
+/* Ghost — soft rounded, subtle border, used for cancel/secondary. */
+.btn-soft-ghost {
+  background: var(--secondary);
+  color: var(--foreground);
+  border: 1px solid var(--hud-border);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.04);
+}
+.btn-soft-ghost:hover:not(:disabled) { border-color: var(--hud-border-strong); }
+.btn-soft:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Bulleted "where it stands" list — soft dot per line. */
+.soft-bullets { display: flex; flex-direction: column; gap: 0.5rem; }
+.soft-bullets > li {
+  position: relative;
+  padding-left: 1.1rem;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--foreground) 90%, transparent);
+}
+.soft-bullets > li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--green);
 }

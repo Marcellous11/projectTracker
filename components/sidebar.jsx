@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { codename } from "@/lib/codename.js";
+import { LayoutDashboard, ListChecks, GitBranch, CalendarRange } from "lucide-react";
 import NewProjectButton from "@/components/new-project-button.jsx";
 
 function hrefFor(rel) {
@@ -74,97 +74,61 @@ export default function Sidebar({ projects, total, root, variant = "desktop", on
 
   return (
     <aside className={asideClass}>
-      <div className="flex flex-col gap-2 border-b border-hud-border px-3 py-3">
+      <div className="flex flex-col gap-2.5 border-b border-hud-border px-3 py-3">
         <div className="flex items-center justify-between gap-2">
-          <span className="hud-label">// ROSTER</span>
-          <div className="flex items-center gap-2 shrink-0">
-            <NewProjectButton />
-            <span className="hud-mono text-[10px] text-hud-ink-dim" title={root}>
-              {projects.length} NODES
-            </span>
-          </div>
+          <span className="soft-title text-[15px]">Projects</span>
+          <NewProjectButton />
         </div>
         <input
           type="search"
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="filter codename / name"
-          className="hud-mono text-[11px] bg-background/60 border border-hud-border rounded px-2 py-1 outline-none focus:border-hud-border-strong"
+          placeholder="Filter by name"
+          className="hud-input text-[13px]"
         />
         <div className="flex flex-wrap gap-1.5">
-          <FilterChip value="all"     active={filter === "all"}     onClick={() => setFilter("all")}>ALL</FilterChip>
-          <FilterChip value="active"  active={filter === "active"}  onClick={() => setFilter("active")}>ACTIVE</FilterChip>
-          <FilterChip value="blocked" active={filter === "blocked"} onClick={() => setFilter("blocked")}>BLOCKED</FilterChip>
-          <FilterChip value="stale"   active={filter === "stale"}   onClick={() => setFilter("stale")}>STALE</FilterChip>
+          <FilterChip value="all"     active={filter === "all"}     onClick={() => setFilter("all")}>All</FilterChip>
+          <FilterChip value="active"  active={filter === "active"}  onClick={() => setFilter("active")}>Active</FilterChip>
+          <FilterChip value="blocked" active={filter === "blocked"} onClick={() => setFilter("blocked")}>Blocked</FilterChip>
+          <FilterChip value="stale"   active={filter === "stale"}   onClick={() => setFilter("stale")}>Stale</FilterChip>
         </div>
       </div>
 
       <nav className="flex-1 overflow-y-auto py-2" onClick={() => onNavigate?.()}>
-        <Link
-          href="/"
-          prefetch={false}
-          className={cn(
-            "mx-2 mb-1 flex items-center justify-between gap-2 rounded px-2 py-1.5 transition-colors",
-            pathname === "/"
-              ? "bg-sidebar-accent text-sidebar-accent-foreground"
-              : "text-sidebar-foreground/85 hover:bg-sidebar-accent/60"
-          )}
-        >
-          <span className="hud-mono uppercase tracking-[0.16em] text-[11px] font-semibold">
-            MISSION CONTROL
-          </span>
-          <span className="hud-num text-[10px] text-foreground/80">{total}</span>
-        </Link>
-        <Link
-          href="/todos"
-          prefetch={false}
-          className={cn(
-            "mx-2 mb-1 flex items-center justify-between gap-2 rounded px-2 py-1.5 transition-colors",
-            pathname === "/todos"
-              ? "bg-sidebar-accent text-sidebar-accent-foreground"
-              : "text-sidebar-foreground/65 hover:bg-sidebar-accent/60"
-          )}
-        >
-          <span className="hud-mono uppercase tracking-[0.16em] text-[10px]">
-            ALL TO-DOS
-          </span>
-          <span className="hud-num text-[10px] text-hud-ink-dim">{total}</span>
-        </Link>
-        <Link
+        <NavLink href="/" icon={LayoutDashboard} label="Mission Control" active={pathname === "/"}>
+          <span className="tabular-nums text-[12px] text-foreground/80">{total}</span>
+        </NavLink>
+        <NavLink
           href="/itinerary"
-          prefetch={false}
-          className={cn(
-            "mx-2 mb-1 flex items-center justify-between gap-2 rounded px-2 py-1.5 transition-colors",
-            pathname === "/itinerary" || pathname?.startsWith("/itinerary/")
-              ? "bg-sidebar-accent text-sidebar-accent-foreground"
-              : "text-sidebar-foreground/65 hover:bg-sidebar-accent/60"
-          )}
-        >
-          <span className="hud-mono uppercase tracking-[0.16em] text-[10px]">
-            ITINERARY
-          </span>
-        </Link>
-        <Link
+          icon={ListChecks}
+          label="Itinerary"
+          active={pathname === "/itinerary" || pathname?.startsWith("/itinerary/")}
+        />
+        <NavLink
           href="/repos"
-          prefetch={false}
-          className={cn(
-            "mx-2 mb-2 flex items-center justify-between gap-2 rounded px-2 py-1.5 transition-colors",
-            pathname === "/repos" || pathname?.startsWith("/repos/")
-              ? "bg-sidebar-accent text-sidebar-accent-foreground"
-              : "text-sidebar-foreground/65 hover:bg-sidebar-accent/60"
-          )}
-        >
-          <span className="hud-mono uppercase tracking-[0.16em] text-[10px]">
-            REPOS
-          </span>
-        </Link>
+          icon={GitBranch}
+          label="Repos"
+          active={pathname === "/repos" || pathname?.startsWith("/repos/")}
+        />
+        <NavLink
+          href="/review"
+          icon={CalendarRange}
+          label="Review"
+          active={pathname === "/review" || pathname?.startsWith("/review/")}
+        />
 
-        <div className="mx-3 my-1 border-b border-hud-border/60" />
+        <div className="mx-3 my-2 border-b border-hud-border/60" />
 
         <ul className="flex flex-col">
           {filtered.length === 0 ? (
-            <li className="px-3 py-2 hud-mono text-[10px] text-hud-ink-dim">// no matches</li>
+            <li className="px-3 py-2 text-[13px] text-hud-ink-dim">No matches</li>
           ) : filtered.map((p) => {
+            // Locally-checked-out repos open their briefing; GitHub-only repos
+            // (no local checkout) have no briefing, so link to the repo on
+            // GitHub (new tab) — or /repos if we have no url.
+            // Every tracked project (local OR GitHub-only) has its own internal
+            // briefing page at /p/<rel>. The "View on GitHub" link lives on that
+            // page now, not here.
             const href = hrefFor(p.rel);
             const active = pathname === href;
             const dim = p.status === "paused" || p.status === "done";
@@ -182,20 +146,17 @@ export default function Sidebar({ projects, total, root, variant = "desktop", on
                     dim && !active && "opacity-55"
                   )}
                 >
-                  <span className="flex-1 min-w-0 flex flex-col gap-0.5 leading-tight">
-                    <span className="truncate text-[12px]">{p.name}</span>
-                    <span
-                      className={cn(
-                        "hud-mono text-[9px] uppercase tracking-[0.14em] truncate",
-                        !p.clientColor && "text-hud-ink-dim"
-                      )}
-                      style={p.clientColor ? { color: p.clientColor } : undefined}
-                      title={p.clientName || ""}
-                    >
-                      {p.codenameOverride || codename(p.rel)}
-                    </span>
-                  </span>
-                  <span className={cn("hud-num text-[10px] shrink-0 tabular-nums", staleTone(p.staleDays))}>
+                  <span
+                    className={cn(
+                      "size-2 shrink-0 rounded-full",
+                      p.status === "active" ? "bg-green"
+                        : p.status === "blocked" ? "bg-hot"
+                        : p.status === "paused" ? "bg-warm"
+                        : "bg-muted-foreground/50"
+                    )}
+                  />
+                  <span className="flex-1 min-w-0 truncate text-[13px] leading-tight">{p.name}</span>
+                  <span className={cn("text-[11px] shrink-0 tabular-nums", staleTone(p.staleDays))}>
                     {p.open > 0 ? p.open : "·"}
                   </span>
                 </Link>
@@ -205,9 +166,28 @@ export default function Sidebar({ projects, total, root, variant = "desktop", on
         </ul>
       </nav>
 
-      <div className="border-t border-hud-border px-3 py-3 pb-4 hud-mono text-[10px] text-hud-ink-dim flex items-center justify-between">
-        <span>// SHOWING {filtered.length}/{projects.length}</span>
+      <div className="border-t border-hud-border px-3 py-3 pb-4 text-[12px] text-hud-ink-dim flex items-center justify-between">
+        <span>Showing {filtered.length} of {projects.length}</span>
       </div>
     </aside>
+  );
+}
+
+function NavLink({ href, icon: Icon, label, active, children }) {
+  return (
+    <Link
+      href={href}
+      prefetch={false}
+      className={cn(
+        "mx-2 mb-1 flex items-center gap-2.5 rounded-xl px-2.5 py-2 transition-colors",
+        active
+          ? "bg-sidebar-accent text-sidebar-accent-foreground"
+          : "text-sidebar-foreground/80 hover:bg-sidebar-accent/60"
+      )}
+    >
+      <Icon size={16} strokeWidth={1.75} className="shrink-0" aria-hidden />
+      <span className="flex-1 text-[14px] font-medium">{label}</span>
+      {children}
+    </Link>
   );
 }

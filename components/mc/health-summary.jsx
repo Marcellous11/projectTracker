@@ -23,7 +23,7 @@ export default function HealthSummary({ projects, dailyActivity = [] }) {
   return (
     <Module title="HEALTH SUMMARY" voice="ops" caption="vitals · last 14d trend">
       <div className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3 md:grid-cols-6">
-        <Tile label="NODES"    value={s.total}             tone="default" spark={spark} />
+        <Tile label="Projects"    value={s.total}             tone="default" spark={spark} />
         <Tile label="ACTIVE"   value={s.byStatus.active}   tone="green"   spark={spark} />
         <Tile label="BLOCKED"  value={s.byStatus.blocked}  tone="hot"     />
         <Tile label="STALE 7+" value={s.byStaleness.cold + s.byStaleness.frozen} tone="warm" />

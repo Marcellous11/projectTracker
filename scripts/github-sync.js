@@ -10,11 +10,51 @@
 
 import path from "node:path";
 import fs from "node:fs";
+import { execFile } from "node:child_process";
 
 const ROOT = process.cwd();
 const CONFIG = path.join(ROOT, "config", "repos.json");
 const OUT = process.env.GITHUB_STATE_PATH || path.join(ROOT, "data", "github-state.json");
 const TOKEN = process.env.GH_TOKEN || process.env.GITHUB_TOKEN || "";
+const MM = process.env.MM_PATH || "/home/marcellous11/.openclaw/mm.sh";
+
+// Previous snapshot (the OUT file), loaded once at startup so we can reuse a
+// cached aiSummary when a repo's head sha hasn't moved — avoids needless LLM
+// calls on every sync.
+function loadPrevState() {
+  try {
+    const d = JSON.parse(fs.readFileSync(OUT, "utf8"));
+    const byRepo = {};
+    for (const r of d.repos || []) if (r.repo) byRepo[r.repo] = r;
+    return byRepo;
+  } catch {
+    return {};
+  }
+}
+const PREV = loadPrevState();
+
+// Generate a bulleted "where it stands" summary by shelling out to the cheap
+// single-shot LLM helper (mm.sh). Never throws — returns null on any
+// failure/timeout/empty output so the sync always completes.
+function generateSummary(label, recentCommits) {
+  return new Promise((resolve) => {
+    const list = (recentCommits || []).slice(0, 12).map((c) => "- " + c.message).join("\n");
+    if (!list) return resolve(null);
+    const prompt =
+      "Summarize where this software project stands for someone getting up to speed. " +
+      "Respond with 3-5 short bullet points, one line each, each starting with \"- \". " +
+      "Be concrete and specific — what was recently worked on and the current focus. " +
+      "No preamble, no marketing fluff, no closing line. Just the bullets. Project: " +
+      label +
+      ". Recent commits (newest first):\n" +
+      list;
+    execFile(MM, [prompt], { timeout: 40000, maxBuffer: 1 << 20 }, (err, stdout) => {
+      if (err) return resolve(null);
+      const out = (stdout || "").trim();
+      resolve(out || null);
+    });
+  });
+}
 
 const headers = {
   Accept: "application/vnd.github+json",
@@ -55,15 +95,35 @@ async function fetchRepo(entry) {
     const branch = info.default_branch;
 
     const [commits, pulls] = await Promise.all([
-      gh(`/repos/${repo}/commits?sha=${encodeURIComponent(branch)}&per_page=1`).catch(() => []),
+      gh(`/repos/${repo}/commits?sha=${encodeURIComponent(branch)}&per_page=15`).catch(() => []),
       gh(`/repos/${repo}/pulls?state=open&per_page=20&sort=updated&direction=desc`).catch(() => []),
     ]);
-    const head = Array.isArray(commits) ? commits[0] : null;
+    const commitList = Array.isArray(commits) ? commits : [];
+    const head = commitList[0] || null;
+    const recentCommits = commitList.map((c) => ({
+      sha: (c.sha || "").slice(0, 7),
+      message: (c.commit?.message || "").split("\n")[0].slice(0, 140),
+      author: c.commit?.author?.name || c.author?.login || "?",
+      date: c.commit?.author?.date || null,
+      url: c.html_url,
+    }));
 
     let ci = { state: "none", total: 0, failed: 0, pending: 0 };
     if (head?.sha) {
       const checks = await gh(`/repos/${repo}/commits/${head.sha}/check-runs`).catch(() => null);
       if (checks?.check_runs) ci = summarizeChecks(checks.check_runs);
+    }
+
+    // aiSummary — reuse the cached one if the head sha hasn't moved since the
+    // previous snapshot (and it was non-null); otherwise regenerate via mm.sh.
+    let aiSummary = null;
+    const prev = PREV[repo];
+    const prevSha = prev?.lastCommit?.sha || null;
+    const newSha = head ? head.sha.slice(0, 7) : null;
+    if (newSha && prevSha && newSha === prevSha && prev?.aiSummary) {
+      aiSummary = prev.aiSummary;
+    } else {
+      aiSummary = await generateSummary(base.label, recentCommits);
     }
 
     return {
@@ -88,6 +148,8 @@ async function fetchRepo(entry) {
         updatedAt: p.updated_at,
         url: p.html_url,
       })),
+      recentCommits,
+      aiSummary,
       ci,
       url: info.html_url,
       fetchedAt: new Date().toISOString(),
