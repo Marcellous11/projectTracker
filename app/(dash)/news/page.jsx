@@ -40,11 +40,11 @@ export default async function NewsPage() {
       </header>
 
       <Tabs defaultValue={federal.length ? "federal" : (world.length ? "world" : "local")}>
-        <TabsList>
-          <TabsTrigger value="local">LOCAL{subInfo ? ` · ${subInfo}` : ""}</TabsTrigger>
-          <TabsTrigger value="federal">FEDERAL</TabsTrigger>
-          <TabsTrigger value="world">WORLD</TabsTrigger>
-          <TabsTrigger value="context">ON THIS DAY</TabsTrigger>
+        <TabsList className="w-full max-w-full justify-start overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <TabsTrigger value="local" className="flex-none">LOCAL{subInfo ? ` · ${subInfo}` : ""}</TabsTrigger>
+          <TabsTrigger value="federal" className="flex-none">FEDERAL</TabsTrigger>
+          <TabsTrigger value="world" className="flex-none">WORLD</TabsTrigger>
+          <TabsTrigger value="context" className="flex-none">ON THIS DAY</TabsTrigger>
         </TabsList>
 
         <TabsContent value="local" className="mt-4">
