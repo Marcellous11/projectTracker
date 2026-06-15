@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, ListChecks, GitBranch } from "lucide-react";
+import { LayoutDashboard, ListChecks, GitBranch, CalendarRange } from "lucide-react";
 import NewProjectButton from "@/components/new-project-button.jsx";
 
 function hrefFor(rel) {
@@ -109,6 +109,12 @@ export default function Sidebar({ projects, total, root, variant = "desktop", on
           icon={GitBranch}
           label="Repos"
           active={pathname === "/repos" || pathname?.startsWith("/repos/")}
+        />
+        <NavLink
+          href="/review"
+          icon={CalendarRange}
+          label="Review"
+          active={pathname === "/review" || pathname?.startsWith("/review/")}
         />
 
         <div className="mx-3 my-2 border-b border-hud-border/60" />
