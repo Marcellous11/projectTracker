@@ -3,6 +3,7 @@ import Module from "@/components/hud/module.jsx";
 import MetaEditor from "@/components/project/meta-editor.jsx";
 import { codename } from "@/lib/codename.js";
 import { relativeAge } from "@/lib/time.js";
+import { listItinerary } from "@/lib/itinerary.js";
 
 function statusTone(status) {
   if (status === "active") return "active";
@@ -26,6 +27,7 @@ export default function GithubBriefing({ project, rel, meta }) {
   const commits = (Array.isArray(gh?.recentCommits) ? gh.recentCommits : []).slice(0, 5);
   const aiSummary = gh?.aiSummary || null;
   const prsUrl = url ? `${url}/pulls` : null;
+  const itinerary = listItinerary({ status: "open", project: rel });
 
   return (
     <div className="flex flex-col gap-6">
@@ -66,9 +68,12 @@ export default function GithubBriefing({ project, rel, meta }) {
       <RecentCommitsCard commits={commits} />
 
       {/* 4 — AT A GLANCE */}
-      <AtAGlance todoCount={null} todosRel={null} prCount={prs.length} prsUrl={prsUrl} />
+      <AtAGlance itineraryCount={itinerary.length} prCount={prs.length} prsUrl={prsUrl} />
 
-      {/* 5 — NOTES */}
+      {/* 5 — ITINERARY */}
+      <ItineraryCard items={itinerary} />
+
+      {/* 6 — NOTES */}
       <Module title="NOTES" voice="briefing" caption="internal · saved to this project">
         {meta?.notes ? (
           <p className="text-[13px] whitespace-pre-wrap leading-relaxed">{meta.notes}</p>
@@ -121,18 +126,18 @@ export function RecentCommitsCard({ commits }) {
   );
 }
 
-/** AT A GLANCE — one compact strip: to-dos, open PRs, itinerary. */
-export function AtAGlance({ todoCount, todosRel, prCount, prsUrl }) {
+/** AT A GLANCE — one compact strip: itinerary count, open PRs. */
+export function AtAGlance({ itineraryCount, prCount, prsUrl }) {
   return (
     <Module title="AT A GLANCE" voice="briefing" caption="quick references">
       <div className="flex flex-wrap items-center gap-x-6 gap-y-2 hud-mono text-[12px]">
-        {todoCount != null && (
+        {itineraryCount != null && (
           <a
-            href={todosRel ? `/todos?project=${encodeURIComponent(todosRel)}` : "/todos"}
+            href="/itinerary"
             className="inline-flex items-baseline gap-1.5 text-hud-ink-dim hover:text-foreground"
           >
-            <span className="text-[15px] text-foreground tabular-nums">{todoCount}</span>
-            <span className="uppercase tracking-[0.14em] text-[10px]">open to-dos</span>
+            <span className="text-[15px] text-foreground tabular-nums">{itineraryCount}</span>
+            <span className="uppercase tracking-[0.14em] text-[10px]">itinerary</span>
           </a>
         )}
         <a
@@ -143,10 +148,33 @@ export function AtAGlance({ todoCount, todosRel, prCount, prsUrl }) {
           <span className="text-[15px] text-foreground tabular-nums">{prCount}</span>
           <span className="uppercase tracking-[0.14em] text-[10px]">open PRs</span>
         </a>
-        <a href="/itinerary" className="inline-flex items-baseline gap-1.5 text-hud-ink-dim hover:text-foreground">
-          <span className="uppercase tracking-[0.14em] text-[10px]">Itinerary ↗</span>
-        </a>
       </div>
+    </Module>
+  );
+}
+
+/** ITINERARY — this project's open itinerary items (the per-project work log). */
+export function ItineraryCard({ items }) {
+  return (
+    <Module title="ITINERARY" voice="briefing" caption="open items for this project">
+      {items.length ? (
+        <ol className="flex flex-col divide-y divide-hud-border/40">
+          {items.map((it) => (
+            <li key={it.id} className="flex items-baseline gap-3 py-2 min-w-0">
+              <span className="flex-1 min-w-0 text-[13px] leading-snug">{it.body}</span>
+            </li>
+          ))}
+          <li className="pt-2">
+            <a href="/itinerary" className="hud-mono text-[10px] uppercase tracking-[0.14em] text-hud-ink-dim hover:text-foreground">
+              Open itinerary ↗
+            </a>
+          </li>
+        </ol>
+      ) : (
+        <a href="/itinerary" className="hud-mono text-[11px] text-hud-ink-dim hover:text-foreground">
+          // no itinerary items — capture one ↗
+        </a>
+      )}
     </Module>
   );
 }

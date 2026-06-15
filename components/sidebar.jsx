@@ -116,21 +116,6 @@ export default function Sidebar({ projects, total, root, variant = "desktop", on
           <span className="hud-num text-[10px] text-foreground/80">{total}</span>
         </Link>
         <Link
-          href="/todos"
-          prefetch={false}
-          className={cn(
-            "mx-2 mb-1 flex items-center justify-between gap-2 rounded px-2 py-1.5 transition-colors",
-            pathname === "/todos"
-              ? "bg-sidebar-accent text-sidebar-accent-foreground"
-              : "text-sidebar-foreground/65 hover:bg-sidebar-accent/60"
-          )}
-        >
-          <span className="hud-mono uppercase tracking-[0.16em] text-[10px]">
-            ALL TO-DOS
-          </span>
-          <span className="hud-num text-[10px] text-hud-ink-dim">{total}</span>
-        </Link>
-        <Link
           href="/itinerary"
           prefetch={false}
           className={cn(

@@ -5,11 +5,13 @@ import { getProjectDetail } from "@/lib/detail.js";
 import { getMeta } from "@/lib/project-meta.js";
 import { getGithubByProject } from "@/lib/github-state.js";
 import { getTrackedProjects } from "@/lib/tracked-projects.js";
+import { listItinerary } from "@/lib/itinerary.js";
 
 import GithubBriefing, {
   Summary,
   RecentCommitsCard,
   AtAGlance,
+  ItineraryCard,
 } from "@/components/project/github-briefing.jsx";
 import BriefingHeader from "@/components/project/header.jsx";
 import Notes from "@/components/project/notes.jsx";
@@ -60,6 +62,9 @@ export default async function BriefingPage({ params }) {
   const fallback =
     detail.nextAction?.trim() || "No summary yet — will generate on the next sync.";
 
+  // This project's open itinerary items (the per-project work log).
+  const itinerary = listItinerary({ status: "open", project: rel });
+
   return (
     <div className="flex flex-col gap-6">
       <BriefingHeader
@@ -75,11 +80,12 @@ export default async function BriefingPage({ params }) {
       <RecentCommitsCard commits={commits} />
 
       <AtAGlance
-        todoCount={detail?.todoCounts?.open ?? 0}
-        todosRel={rel}
+        itineraryCount={itinerary.length}
         prCount={prCount}
         prsUrl={prsUrl}
       />
+
+      <ItineraryCard items={itinerary} />
 
       <Notes statusMarkdown={detail.statusMarkdown} readme={detail.readme} />
     </div>
