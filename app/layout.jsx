@@ -2,13 +2,12 @@ import "./globals.css";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 import Topbar from "@/components/topbar.jsx";
-import AutoRefresh from "@/components/hud/auto-refresh.jsx";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata = {
   title: "Command Central",
-  description: "Live HUD view of every project's STATUS.md plus Claude session telemetry",
+  description: "Live HUD view of every project's STATUS.md",
   applicationName: "Command Central",
   appleWebApp: {
     capable: true,
@@ -38,7 +37,6 @@ export default function RootLayout({ children }) {
         suppressHydrationWarning
       >
         <Topbar />
-        <AutoRefresh />
         {children}
       </body>
     </html>

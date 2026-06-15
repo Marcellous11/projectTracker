@@ -40,8 +40,6 @@ export async function POST(request) {
     // Refresh every surface that lists projects so the new entry appears.
     revalidatePath("/");
     revalidatePath("/todos");
-    revalidatePath("/clients");
-    revalidatePath("/time");
     revalidatePath(`/p/${out.rel.split("/").map(encodeURIComponent).join("/")}`);
     return Response.json({ rel: out.rel }, { status: 201 });
   } catch (err) {

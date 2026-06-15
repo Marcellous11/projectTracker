@@ -30,8 +30,6 @@ export async function POST(request) {
     });
     revalidatePath("/");
     revalidatePath("/todos");
-    revalidatePath("/clients");
-    revalidatePath("/time");
     revalidatePath(`/p/${out.rel.split("/").map(encodeURIComponent).join("/")}`);
     return Response.json({ rel: out.rel, created: out.created }, { status: 201 });
   } catch (err) {

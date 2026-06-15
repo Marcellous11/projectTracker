@@ -17,13 +17,12 @@ function dollars(cents) {
 }
 
 /**
- * Inline editor (button + slide-in Sheet) for per-project metadata: client,
+ * Inline editor (button + slide-in Sheet) for per-project metadata:
  * codename override, rate override, currency, notes. Empties = inherit.
  */
-export default function MetaEditor({ rel, meta, clients }) {
+export default function MetaEditor({ rel, meta }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [clientId, setClientId] = useState(meta?.client_id ?? "");
   const [codename, setCodename] = useState(meta?.codename ?? "");
   const [rate, setRate] = useState(dollars(meta?.rate_cents));
   const [currency, setCurrency] = useState(meta?.currency ?? "");
@@ -42,7 +41,6 @@ export default function MetaEditor({ rel, meta, clients }) {
       return;
     }
     const payload = {
-      client_id: clientId === "" ? null : Number(clientId),
       codename: codename.trim() || null,
       rate_cents: rateCents,
       currency: currency.trim().toUpperCase() || null,
@@ -70,8 +68,6 @@ export default function MetaEditor({ rel, meta, clients }) {
     }
   }
 
-  const clientDefault = clients.find((c) => c.id === Number(clientId));
-
   return (
     <>
       <button
@@ -92,19 +88,6 @@ export default function MetaEditor({ rel, meta, clients }) {
           </SheetHeader>
 
           <form onSubmit={submit} className="flex flex-1 flex-col gap-4 overflow-y-auto p-4">
-            <Field label="CLIENT">
-              <select
-                value={clientId}
-                onChange={(e) => setClientId(e.target.value)}
-                className="hud-input"
-              >
-                <option value="">— none —</option>
-                {clients.map((c) => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
-                ))}
-              </select>
-            </Field>
-
             <Field label="CODENAME (override)">
               <input
                 value={codename}
@@ -125,9 +108,7 @@ export default function MetaEditor({ rel, meta, clients }) {
                     value={rate}
                     onChange={(e) => setRate(e.target.value)}
                     className="hud-input"
-                    placeholder={clientDefault?.default_rate_cents != null
-                      ? `inherits ${(clientDefault.default_rate_cents / 100).toFixed(2)}`
-                      : "—"}
+                    placeholder="—"
                   />
                   <span className="hud-mono text-[10px] uppercase text-hud-ink-dim">/hr</span>
                 </div>
@@ -138,7 +119,7 @@ export default function MetaEditor({ rel, meta, clients }) {
                   onChange={(e) => setCurrency(e.target.value.toUpperCase())}
                   maxLength={3}
                   className="hud-input hud-mono uppercase text-center"
-                  placeholder={clientDefault?.default_currency || "USD"}
+                  placeholder="USD"
                 />
               </Field>
             </div>

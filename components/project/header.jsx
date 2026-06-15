@@ -1,6 +1,5 @@
 import { Pill, HexPill } from "@/components/hud/pill.jsx";
 import { codename } from "@/lib/codename.js";
-import ClientPicker from "@/components/project/client-picker.jsx";
 import MetaEditor from "@/components/project/meta-editor.jsx";
 
 function fmtDate(d) {
@@ -30,7 +29,7 @@ function stalenessTone(d) {
  * Per-project briefing header. Hex codename + name + pills + a quiet
  * coordinate-style caption (branch · short-cwd · last contact).
  */
-export default function BriefingHeader({ detail, rel, branch = null, lastSessionAt = null, meta = null, clients = [] }) {
+export default function BriefingHeader({ detail, rel, branch = null, lastSessionAt = null, meta = null }) {
   const tone = statusTone(detail?.status);
   const stTone = stalenessTone(detail?.staleDays);
   const displayCodename = meta?.codename || codename(rel);
@@ -48,7 +47,6 @@ export default function BriefingHeader({ detail, rel, branch = null, lastSession
       <div className="flex flex-wrap items-center gap-3">
         <HexPill tone={tone} className="shrink-0">{displayCodename}</HexPill>
         <h1 className="hud-mono tracking-tight text-2xl truncate min-w-0">{detail?.name || "Untitled"}</h1>
-        <ClientPicker rel={rel} meta={meta} clients={clients} />
         <div className="flex items-center gap-2 ml-auto">
           <Pill tone={tone}>{detail?.status || "untracked"}</Pill>
           {detail?.priority && <Pill tone="done">{detail.priority}</Pill>}
@@ -57,7 +55,7 @@ export default function BriefingHeader({ detail, rel, branch = null, lastSession
               {detail.staleDays}d stale
             </Pill>
           )}
-          <MetaEditor rel={rel} meta={meta} clients={clients} />
+          <MetaEditor rel={rel} meta={meta} />
         </div>
       </div>
 

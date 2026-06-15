@@ -17,8 +17,6 @@ export default function MobileNav({ projects, total, root }) {
     };
   }, [open]);
 
-  const live = projects.filter((p) => p.pulse?.liveNow).length;
-
   return (
     <>
       <div className="md:hidden sticky top-9 z-40 flex items-center justify-between gap-3 border-b border-hud-border bg-background/90 px-4 py-2 backdrop-blur">
@@ -32,7 +30,6 @@ export default function MobileNav({ projects, total, root }) {
         </button>
         <span className="hud-mono text-[10px] uppercase tracking-[0.16em] text-hud-ink-dim">
           {projects.length} nodes
-          {live > 0 && <span className="text-green"> · {live} live</span>}
         </span>
       </div>
 
