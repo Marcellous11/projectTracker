@@ -32,7 +32,7 @@ export default function ProjectCard({ p, itineraryCount = 0 }) {
     <Link
       href={hrefFor(p.rel)}
       prefetch={false}
-      className="block rounded-xl border border-hud-border bg-card/50 p-4 transition-colors hover:bg-card/80"
+      className="soft-card soft-card-hover block p-5"
     >
       <div className="flex items-center gap-2">
         <span className={`size-2 shrink-0 rounded-full ${STATUS_DOT[p.status] || "bg-muted-foreground/40"}`} />

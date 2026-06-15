@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --radius: 0.625rem;
+  --radius: 1rem; /* rounder, tactile (Organic Soft) */
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -40,51 +40,52 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.80 0 0); /* brighter for legibility (was 0.708) */
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  /* Organic Soft UI — Option A (Dark Organic Dashboard). Calm, tactile,
+     nature-muted greens with soft elevation. */
+  --background: #172126;          /* deep */
+  --foreground: #E7ECE7;
+  --card: #202C30;                /* raised */
+  --card-foreground: #E7ECE7;
+  --popover: #232F33;
+  --popover-foreground: #E7ECE7;
+  --primary: #A9D99B;             /* green accent */
+  --primary-foreground: #16201B;
+  --secondary: #2B373A;           /* surface soft */
+  --secondary-foreground: #E7ECE7;
+  --muted: #2B373A;
+  --muted-foreground: #AAB5AD;    /* text secondary */
+  --accent: #2B373A;
+  --accent-foreground: #E7ECE7;
+  --destructive: #E0926E;
+  --border: #3B4749;              /* subtle */
+  --input: #3B4749;
+  --ring: #BFFFD7;                /* mint glow */
+  --sidebar: #1B2629;
+  --sidebar-foreground: #E7ECE7;
+  --sidebar-primary: #A9D99B;
+  --sidebar-primary-foreground: #16201B;
+  --sidebar-accent: #2B373A;
+  --sidebar-accent-foreground: #E7ECE7;
+  --sidebar-border: #3B4749;
+  --sidebar-ring: #BFFFD7;
 
-  --warm: oklch(0.8 0.13 75);
-  --hot: oklch(0.68 0.19 22);
-  --green: oklch(0.76 0.15 155);
+  --warm: #D8B77F;                /* warm sand */
+  --hot: #E9B38D;                 /* soft peach — alerts */
+  --green: #A9D99B;
 
-  /* HUD chrome — Vine FX / The Amateur-coded.
-     Borders are thin, glows are subtle, motion is signal not decoration. */
-  --hud-border:        oklch(1 0 0 / 14%);
-  --hud-border-strong: oklch(1 0 0 / 28%);
-  --hud-grid:          oklch(1 0 0 / 6%);
-  --hud-glow-green:    oklch(0.76 0.15 155 / 35%);
-  --hud-glow-hot:      oklch(0.68 0.19 22  / 35%);
-  --hud-glow-warm:     oklch(0.80 0.13 75  / 30%);
-  --hud-glow-blue:     oklch(0.70 0.14 230 / 35%);
-  --hud-ink-dim:       oklch(0.82 0 0 / 92%);  /* brighter secondary text */
-  --hud-label:         oklch(0.86 0 0 / 95%);  /* brighter labels */
+  /* HUD chrome — softened for Organic Soft */
+  --hud-border:        rgba(255,255,255,0.08);
+  --hud-border-strong: rgba(255,255,255,0.18);
+  --hud-grid:          rgba(255,255,255,0.025);
+  --hud-glow-green:    rgba(169,217,155,0.35);
+  --hud-glow-hot:      rgba(233,179,141,0.30);
+  --hud-glow-warm:     rgba(216,183,127,0.30);
+  --hud-glow-blue:     rgba(158,190,204,0.30);
+  --hud-ink-dim:       #AAB5AD;
+  --hud-label:         #C7D0C8;
+  --mint-glow:         #BFFFD7;
 
-  /* Signals dialect — Claude session events */
-  --color-blue:        oklch(0.70 0.14 230);
+  --color-blue:        #9EBECC;
 }
 
 @theme inline {
@@ -492,4 +493,53 @@ main .flex > * {
     max-width: none !important;
     width: auto !important;
   }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   ORGANIC SOFT UI — soft elevation + tactile surfaces (Option A)
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* Raised physical tile — used for cards/panels. */
+.soft-card {
+  border-radius: 24px;
+  border: 1px solid var(--hud-border);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.012)),
+    var(--card);
+  box-shadow:
+    0 22px 45px rgba(0, 0, 0, 0.35),
+    0 6px 16px rgba(0, 0, 0, 0.26),
+    inset 0 1px 1px rgba(255, 255, 255, 0.06);
+}
+.soft-card-hover {
+  transition: box-shadow 160ms ease, transform 160ms ease;
+}
+.soft-card-hover:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 26px 55px rgba(0, 0, 0, 0.4),
+    0 8px 20px rgba(0, 0, 0, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.08);
+}
+
+/* Give the HUD module shell the same soft, raised feel. */
+.hud-module {
+  border-radius: 22px;
+  border-color: var(--hud-border);
+  box-shadow:
+    0 18px 38px rgba(0, 0, 0, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.05);
+}
+
+/* Recessed, tactile inputs with a soft mint focus glow. */
+.hud-input {
+  border-radius: 16px;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.22);
+}
+.hud-input:focus,
+.hud-input:focus-visible {
+  border-color: var(--mint-glow);
+  box-shadow:
+    0 0 0 3px rgba(191, 255, 215, 0.22),
+    inset 0 2px 6px rgba(0, 0, 0, 0.18);
 }

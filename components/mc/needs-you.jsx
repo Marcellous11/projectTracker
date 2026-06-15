@@ -31,7 +31,7 @@ export default function NeedsYou({ projects }) {
   const dot = { hot: "bg-hot", warm: "bg-warm", blue: "bg-[var(--color-blue)]" };
 
   return (
-    <section className="rounded-xl border border-hud-border bg-card/40 p-4">
+    <section className="soft-card p-5">
       <h2 className="hud-label mb-1">Needs you</h2>
       <ul className="flex flex-col divide-y divide-hud-border/40">
         {items.map((it, i) => (

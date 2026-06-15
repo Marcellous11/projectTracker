@@ -11,7 +11,7 @@ export default function ItineraryPeek() {
   }
 
   return (
-    <section className="rounded-xl border border-hud-border bg-card/40 p-4">
+    <section className="soft-card p-5">
       <div className="mb-2 flex items-center justify-between">
         <h2 className="hud-label">Itinerary</h2>
         <Link href="/itinerary" className="hud-mono text-[11px] text-hud-ink-dim hover:text-foreground">
