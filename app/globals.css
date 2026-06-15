@@ -407,3 +407,46 @@ textarea.hud-input { height: auto; }
  */
 .hud-voice-signals .hud-module-header > .hud-label::before { content: "// "; opacity: 0.7; }
 
+
+/* ──────────────────────────────────────────────────────────────────────────
+   MOBILE STANDARDS PASS (phones only — desktop HUD density untouched)
+   - 16px inputs so iOS Safari doesn't zoom on focus
+   - larger, more readable type (the HUD's tiny utility sizes scaled up)
+   - 44px tap targets for nav + controls (Apple HIG / Material minimum)
+   ────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  body { font-size: 15px; -webkit-text-size-adjust: 100%; }
+
+  /* Scale up the intentionally-tiny utility type. */
+  .text-\[9px\]  { font-size: 11px; }
+  .text-\[10px\] { font-size: 12px; }
+  .text-\[11px\] { font-size: 13px; }
+  .text-\[12px\] { font-size: 14px; }
+  .text-\[13px\] { font-size: 15px; }
+  .hud-label { font-size: 11px; letter-spacing: 0.14em; }
+
+  /* Inputs at 16px (prevents the focus-zoom) and tall enough to tap. */
+  input, select, textarea, .hud-input {
+    font-size: 16px !important;
+    min-height: 44px;
+  }
+  textarea, textarea.hud-input { min-height: 76px; }
+
+  /* Comfortable tap targets for navigation, filter chips, and tabs. */
+  aside nav a { min-height: 44px; align-items: center; }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding-inline: 0.7rem;
+    font-size: 12px;
+  }
+  [data-slot="tabs-trigger"] { min-height: 42px; }
+
+  /* A little more breathing room inside cards/modules. */
+  .hud-module-body { padding: 14px; }
+  .hud-module-header { min-height: 44px; }
+
+  /* Clean tap feedback (no grey flash, components show their own active state). */
+  a, button, [role="tab"], select { -webkit-tap-highlight-color: transparent; }
+}
