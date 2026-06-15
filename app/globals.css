@@ -449,3 +449,12 @@ textarea.hud-input { height: auto; }
   /* Clean tap feedback (no grey flash, components show their own active state). */
   a, button, [role="tab"], select { -webkit-tap-highlight-color: transparent; }
 }
+
+/* Grid/flex columns must be allowed to shrink below their content width, or a
+   wide child stretches the whole module off the right edge of the screen
+   (grid & flex items default to min-width:auto). Applies on every size — this
+   is correct layout hygiene, not just a mobile patch. */
+main .grid > *,
+main .flex > * {
+  min-width: 0;
+}
