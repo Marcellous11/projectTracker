@@ -98,9 +98,16 @@ function EventsBlock({ text }) {
                   </li>
                 ))}
                 {allDay.length > 0 && (
-                  <li className="flex items-baseline gap-2">
+                  <li className="flex items-start gap-2">
                     <span className="w-11 shrink-0 text-[11px] text-hud-ink-dim">All day</span>
-                    <span className="min-w-0">{allDay.join(" · ")}</span>
+                    <ul className="flex min-w-0 flex-col gap-0.5">
+                      {allDay.map((a, k) => (
+                        <li key={k} className="flex gap-1.5">
+                          <span className="shrink-0 text-hud-ink-dim">•</span>
+                          <span className="min-w-0">{a}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </li>
                 )}
               </ul>
