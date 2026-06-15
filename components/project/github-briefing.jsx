@@ -53,11 +53,11 @@ export default function GithubBriefing({ project, rel, meta }) {
     <div className="flex flex-col gap-6">
       {/* 1 — HEADER */}
       <section className="flex flex-col gap-3 pb-4 border-b border-hud-border">
-        <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-2xl font-semibold tracking-tight truncate min-w-0">
+        <div className="flex flex-col gap-3">
+          <h1 className="text-2xl font-semibold tracking-tight">
             {project?.name || "Untitled"}
           </h1>
-          <div className="flex items-center gap-2 ml-auto">
+          <div className="flex flex-wrap items-center gap-2">
             <Pill tone={tone}>{project?.status || "untracked"}</Pill>
             {url && (
               <a
