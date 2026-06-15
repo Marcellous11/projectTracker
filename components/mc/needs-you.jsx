@@ -45,11 +45,13 @@ export default function NeedsYou({ projects }) {
               href={it.href}
               target={it.href.startsWith("http") ? "_blank" : undefined}
               rel="noreferrer"
-              className="mc-stack flex items-center gap-2 py-2 text-[13px] transition-colors hover:text-foreground"
+              className="flex items-start gap-2.5 py-2.5 text-[13px] transition-colors hover:text-foreground"
             >
-              <span className={`size-1.5 shrink-0 rounded-full ${dot[it.tone]}`} />
-              <span className="font-medium text-foreground">{it.label}</span>
-              <span className="min-w-0 text-muted-foreground">— {it.text}</span>
+              <span className={`mt-1.5 size-1.5 shrink-0 rounded-full ${dot[it.tone]}`} />
+              <span className="flex min-w-0 flex-col leading-snug">
+                <span className="font-medium text-foreground">{it.label}</span>
+                <span className="text-muted-foreground">{it.text}</span>
+              </span>
             </a>
           </li>
         ))}
