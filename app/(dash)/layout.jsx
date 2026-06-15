@@ -2,6 +2,7 @@ import { getScannedProjects, projectsRoot } from "@/lib/scan.js";
 import { getPulseForProjects } from "@/lib/sessions.js";
 import { metaByRel } from "@/lib/project-meta.js";
 import Sidebar from "@/components/sidebar.jsx";
+import MobileNav from "@/components/mobile-nav.jsx";
 
 export const dynamic = "force-dynamic";
 
@@ -60,11 +61,14 @@ export default async function DashLayout({ children }) {
   const total = projects.reduce((n, p) => n + p.open, 0);
 
   return (
-    <div className="flex min-h-[calc(100dvh-2.25rem)]">
-      <Sidebar projects={projects} total={total} root={root} />
-      <main className="min-w-0 flex-1 px-6 py-8 md:px-10">
-        {scanError ? <p className="text-sm text-hot">Scan failed: {scanError}</p> : children}
-      </main>
-    </div>
+    <>
+      <MobileNav projects={projects} total={total} root={root} />
+      <div className="flex min-h-[calc(100dvh-2.25rem)]">
+        <Sidebar projects={projects} total={total} root={root} />
+        <main className="min-w-0 flex-1 px-4 py-5 md:px-10 md:py-8">
+          {scanError ? <p className="text-sm text-hot">Scan failed: {scanError}</p> : children}
+        </main>
+      </div>
+    </>
   );
 }

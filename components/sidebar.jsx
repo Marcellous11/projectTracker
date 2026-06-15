@@ -105,7 +105,7 @@ function FilterChip({ value, active, onClick, children }) {
   );
 }
 
-export default function Sidebar({ projects, total, root }) {
+export default function Sidebar({ projects, total, root, variant = "desktop", onNavigate }) {
   const pathname = usePathname();
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState("all"); // "all" | "active" | "blocked" | "stale"
@@ -124,8 +124,15 @@ export default function Sidebar({ projects, total, root }) {
   const liveCount = projects.filter((p) => p.pulse?.liveNow).length;
   const idleCount = projects.filter((p) => p.pulse?.idle).length;
 
+  // Desktop: a sticky left rail, hidden on small screens (the mobile drawer
+  // renders this same component with variant="drawer"). Drawer: fill its host.
+  const asideClass =
+    variant === "drawer"
+      ? "flex h-full w-full flex-col bg-sidebar"
+      : "hidden md:flex sticky top-9 h-[calc(100dvh-2.25rem)] w-64 shrink-0 flex-col border-r border-hud-border bg-sidebar/70 backdrop-blur";
+
   return (
-    <aside className="sticky top-9 flex h-[calc(100dvh-2.25rem)] w-64 shrink-0 flex-col border-r border-hud-border bg-sidebar/70 backdrop-blur">
+    <aside className={asideClass}>
       <div className="flex flex-col gap-2 border-b border-hud-border px-3 py-3">
         <div className="flex items-center justify-between gap-2">
           <span className="hud-label">// ROSTER</span>
@@ -151,7 +158,7 @@ export default function Sidebar({ projects, total, root }) {
         </div>
       </div>
 
-      <nav className="flex-1 overflow-y-auto py-2">
+      <nav className="flex-1 overflow-y-auto py-2" onClick={() => onNavigate?.()}>
         <Link
           href="/"
           prefetch={false}
@@ -181,6 +188,20 @@ export default function Sidebar({ projects, total, root }) {
             ALL TO-DOS
           </span>
           <span className="hud-num text-[10px] text-hud-ink-dim">{total}</span>
+        </Link>
+        <Link
+          href="/itinerary"
+          prefetch={false}
+          className={cn(
+            "mx-2 mb-1 flex items-center justify-between gap-2 rounded px-2 py-1.5 transition-colors",
+            pathname === "/itinerary" || pathname?.startsWith("/itinerary/")
+              ? "bg-sidebar-accent text-sidebar-accent-foreground"
+              : "text-sidebar-foreground/65 hover:bg-sidebar-accent/60"
+          )}
+        >
+          <span className="hud-mono uppercase tracking-[0.16em] text-[10px]">
+            ITINERARY
+          </span>
         </Link>
         <Link
           href="/clients"

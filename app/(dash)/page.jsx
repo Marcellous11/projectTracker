@@ -56,7 +56,7 @@ export default async function MissionControl() {
   const clientTotals = totalsByClient({ from: monthMs });
 
   return (
-    <div className="relative hud-grid-bg -mx-6 px-6 -my-8 py-8 md:-mx-10 md:px-10">
+    <div className="relative hud-grid-bg -mx-4 px-4 -my-5 py-5 md:-mx-10 md:px-10 md:-my-8 md:py-8">
       <div className="relative flex flex-col gap-8">
         {/* ─────────────── SECTOR A · ACTIVE OPERATIONS ─────────────── */}
         <Sector label="A" title="Active Operations">

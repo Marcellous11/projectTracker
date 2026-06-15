@@ -78,7 +78,7 @@ export default async function Topbar() {
 
   return (
     <div className="sticky top-0 z-50 w-full border-b border-hud-border bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/65">
-      <div className="flex h-9 w-full items-center gap-4 px-4 text-[11px]">
+      <div className="flex h-9 w-full items-center gap-4 overflow-x-auto px-4 text-[11px] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {/* Brand */}
         <div className="flex items-center gap-2 shrink-0">
           <span className="inline-block size-1.5 rounded-full bg-green hud-pulse" />
