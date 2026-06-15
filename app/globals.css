@@ -157,14 +157,24 @@ body {
   overflow-wrap: anywhere;
 }
 
-/* Phones: nothing truncates. Tailwind `truncate` forces single-line ellipsis,
-   which was clipping titles, messages, and the fixed-width codename/label
-   columns. On a phone we'd rather wrap to a new line than hide text. */
+/* Phones, readable lists. Two different needs:
+   1. Flexible CONTENT columns (carry `min-w-0`) should WRAP to new lines so
+      titles/messages are never cut off.
+   2. The narrow fixed-width CODENAME labels (`shrink-0 tracking-wider`) should
+      NOT wrap into a cramped 80–90px box — let them size to their text on one
+      clean line (capped so they can't dominate the row). */
 @media (max-width: 768px) {
-  .truncate {
+  .min-w-0.truncate {
     white-space: normal !important;
     overflow: visible !important;
     text-overflow: clip !important;
+  }
+  .shrink-0.tracking-wider {
+    width: auto !important;
+    max-width: 42% !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 
