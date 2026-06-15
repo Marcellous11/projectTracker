@@ -51,7 +51,7 @@
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
+  --muted-foreground: oklch(0.80 0 0); /* brighter for legibility (was 0.708) */
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
@@ -80,8 +80,8 @@
   --hud-glow-hot:      oklch(0.68 0.19 22  / 35%);
   --hud-glow-warm:     oklch(0.80 0.13 75  / 30%);
   --hud-glow-blue:     oklch(0.70 0.14 230 / 35%);
-  --hud-ink-dim:       oklch(0.708 0 0 / 70%);
-  --hud-label:         oklch(0.708 0 0 / 90%);
+  --hud-ink-dim:       oklch(0.82 0 0 / 92%);  /* brighter secondary text */
+  --hud-label:         oklch(0.86 0 0 / 95%);  /* brighter labels */
 
   /* Signals dialect — Claude session events */
   --color-blue:        oklch(0.70 0.14 230);
