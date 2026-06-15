@@ -65,7 +65,7 @@ export default function HeadlinesPanel({ items = [], scope, emptyHint = null, ti
                     <span className="hud-mono text-[10px] text-hud-ink-dim tabular-nums shrink-0 w-[68px]">
                       {relativeAge(it.ts) || "—"}
                     </span>
-                    <span className="text-[13px] text-foreground/90 leading-snug">
+                    <span className="min-w-0 flex-1 break-words text-[13px] text-foreground/90 leading-snug">
                       {it.title}
                       {it.summary && (
                         <span className="block text-[11px] text-hud-ink-dim mt-0.5 line-clamp-2">
