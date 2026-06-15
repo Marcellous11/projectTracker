@@ -24,7 +24,7 @@ export default function TodosCompact({ projects }) {
   }
 
   const pickable = projects
-    .filter((p) => p.tracked !== false && p.status !== "untracked")
+    .filter((p) => p.hasLocal !== false && p.tracked !== false && p.status !== "untracked")
     .map((p) => ({ rel: p.rel, name: p.name, status: p.status }))
     .sort((a, b) => {
       if ((a.status === "done") !== (b.status === "done")) {

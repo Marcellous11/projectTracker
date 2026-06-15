@@ -1,4 +1,5 @@
-import { getScannedProjects, projectsRoot } from "@/lib/scan.js";
+import { projectsRoot } from "@/lib/scan.js";
+import { getTrackedProjects } from "@/lib/tracked-projects.js";
 import { summarize } from "@/lib/aggregate.js";
 import Clock from "@/components/hud/clock.jsx";
 import CountUp from "@/components/hud/count-up.jsx";
@@ -19,7 +20,7 @@ export default async function Topbar() {
   let root = "";
   try {
     root = projectsRoot();
-    const projects = await getScannedProjects(root);
+    const projects = await getTrackedProjects(root);
     summary = summarize(projects);
   } catch {
     /* render in degraded mode */

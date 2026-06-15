@@ -1,4 +1,4 @@
-import { getScannedProjects } from "@/lib/scan.js";
+import { getTrackedProjects } from "@/lib/tracked-projects.js";
 import { getDailyActivity, getStreak } from "@/lib/activity.js";
 import Sector from "@/components/mc/sector.jsx";
 import HealthSummary from "@/components/mc/health-summary.jsx";
@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 
 export default async function MissionControl() {
   const [projects, daily, streak] = await Promise.all([
-    getScannedProjects(),
+    getTrackedProjects(),
     getDailyActivity(84),
     getStreak(84),
   ]);

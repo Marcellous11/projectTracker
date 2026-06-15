@@ -1,4 +1,5 @@
-import { getScannedProjects, projectsRoot } from "@/lib/scan.js";
+import { projectsRoot } from "@/lib/scan.js";
+import { getTrackedProjects } from "@/lib/tracked-projects.js";
 import { metaByRel } from "@/lib/project-meta.js";
 import Sidebar from "@/components/sidebar.jsx";
 import MobileNav from "@/components/mobile-nav.jsx";
@@ -12,10 +13,9 @@ export default async function DashLayout({ children }) {
   let scanError = null;
   let meta = {};
   try {
-    const raw = await getScannedProjects(root);
+    const raw = await getTrackedProjects(root);
     meta = metaByRel();
-    // Order is whatever getScannedProjects established (blocked > active by
-    // staleness > untracked > paused > done, alphabetical within).
+    // Order comes from config/repos.json (the tracked-repos roster).
     projects = raw.map((p) => {
       const m = meta[p.rel] || null;
       return {
@@ -24,6 +24,8 @@ export default async function DashLayout({ children }) {
         status: p.status,
         open: p.todoCounts?.open ?? 0,
         staleDays: p.staleDays ?? null,
+        hasLocal: p.hasLocal,
+        github: p.github || null,
         codenameOverride: m?.codename || null,
         clientName: m?.client_name || null,
         clientColor: m?.client_color || null,
