@@ -165,12 +165,12 @@ function SessionRow({ s, project, live = false, daemonCwd = null, trackableCwd =
     ? ({ children }) => (
         <Link
           href={`/p/${project.rel.split("/").map(encodeURIComponent).join("/")}`}
-          className="flex items-center gap-3 py-2 px-3"
+          className="mc-stack flex items-center gap-3 py-2 px-3"
         >
           {children}
         </Link>
       )
-    : ({ children }) => <div className="flex items-center gap-3 py-2 px-3">{children}</div>;
+    : ({ children }) => <div className="mc-stack flex items-center gap-3 py-2 px-3">{children}</div>;
 
   return (
     <Wrap>

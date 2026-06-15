@@ -86,7 +86,7 @@ export default function Ticker({ initialEvents = [], pollMs = 30_000 }) {
             return (
               <li
                 key={eventKey(e)}
-                className="hud-fade-in flex items-baseline gap-2 px-3 py-1 text-[11px] leading-tight hover:bg-foreground/5 transition-colors"
+                className="mc-stack hud-fade-in flex items-baseline gap-2 px-3 py-1 text-[11px] leading-tight hover:bg-foreground/5 transition-colors"
               >
                 <span className="hud-mono tabular-nums text-hud-ink-dim shrink-0 w-[64px]">
                   {fmtTime(e.ts)}

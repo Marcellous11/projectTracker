@@ -468,3 +468,28 @@ main .grid > *,
 main .flex > * {
   min-width: 0;
 }
+
+/* Phones: module list rows stack — the content paragraph gets its own full
+   width line, with the accompanying meta (codename, age, sha) pinned above it.
+   `.mc-stack` is added to the row containers in the mc/* modules. */
+@media (max-width: 768px) {
+  .mc-stack {
+    flex-wrap: wrap;
+    align-items: baseline;
+    row-gap: 2px;
+    column-gap: 0.5rem;
+  }
+  .mc-stack > .min-w-0 {
+    flex-basis: 100%;
+    width: 100%;
+    order: 2; /* push the paragraph below the meta items */
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+  /* On the meta line the codename now has room — don't cap it. */
+  .mc-stack .tracking-wider {
+    max-width: none !important;
+    width: auto !important;
+  }
+}
