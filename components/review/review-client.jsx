@@ -63,32 +63,50 @@ function parseAgenda(text) {
   return days;
 }
 
+// "14:30" → "2:30p" — compact 12-hour so the time column stays narrow.
+function fmt12(hhmm) {
+  const [h, m] = hhmm.split(":").map(Number);
+  const ap = h < 12 ? "a" : "p";
+  const hr = h % 12 === 0 ? 12 : h % 12;
+  return `${hr}:${String(m).padStart(2, "0")}${ap}`;
+}
+
 function EventsBlock({ text }) {
   const days = parseAgenda(text);
   if (!days.length) return null;
   return (
     <SourceList title="Calendar" icon={CalendarClock}>
       <div className="flex flex-col gap-3">
-        {days.map((d, i) => (
-          <div key={i}>
-            {d.date && (
-              <div className="mb-1 text-[12px] font-semibold text-foreground/90">{d.date}</div>
-            )}
-            <ul className="flex flex-col gap-1">
-              {d.events.map((e, j) => {
-                const tm = e.match(/^(\d{1,2}:\d{2})\s+(.*)$/);
-                return (
-                  <li key={j} className="mc-stack flex items-baseline gap-2.5 text-[12px] text-foreground/75">
-                    <span className="w-12 shrink-0 tabular-nums text-hud-ink-dim">
-                      {tm ? tm[1] : "all-day"}
-                    </span>
-                    <span className="min-w-0">{tm ? tm[2] : e}</span>
+        {days.map((d, i) => {
+          const timed = [];
+          const allDay = [];
+          for (const e of d.events) {
+            const tm = e.match(/^(\d{1,2}:\d{2})\s+(.*)$/);
+            if (tm) timed.push({ time: fmt12(tm[1]), title: tm[2] });
+            else allDay.push(e);
+          }
+          return (
+            <div key={i}>
+              {d.date && (
+                <div className="mb-1 text-[12px] font-semibold text-foreground/90">{d.date}</div>
+              )}
+              <ul className="flex flex-col gap-1 text-[12px] text-foreground/75">
+                {timed.map((e, j) => (
+                  <li key={j} className="flex items-baseline gap-2">
+                    <span className="w-11 shrink-0 tabular-nums text-hud-ink-dim">{e.time}</span>
+                    <span className="min-w-0">{e.title}</span>
                   </li>
-                );
-              })}
-            </ul>
-          </div>
-        ))}
+                ))}
+                {allDay.length > 0 && (
+                  <li className="flex items-baseline gap-2">
+                    <span className="w-11 shrink-0 text-[11px] text-hud-ink-dim">All day</span>
+                    <span className="min-w-0">{allDay.join(" · ")}</span>
+                  </li>
+                )}
+              </ul>
+            </div>
+          );
+        })}
       </div>
     </SourceList>
   );
