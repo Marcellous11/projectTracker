@@ -151,6 +151,24 @@ body {
   max-width: 100%;
 }
 
+/* Break long unbroken tokens (paths, URLs, codenames) so they never push a
+   module past the screen edge. */
+body {
+  overflow-wrap: anywhere;
+}
+
+/* Phones: the flexible content columns use Tailwind `truncate` (single-line
+   ellipsis), which was clipping titles/messages. Any flex-filling text column
+   (it carries `min-w-0`) should WRAP to a new line instead. Fixed-width mono
+   labels (`shrink-0 w-[..]`) lack min-w-0, so they keep their tidy ellipsis. */
+@media (max-width: 768px) {
+  .min-w-0.truncate {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+}
+
 /* Rendered markdown (STATUS.md body, README) inside the detail panel. */
 .md-body {
   font-size: 0.875rem;
