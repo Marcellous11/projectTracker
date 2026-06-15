@@ -157,15 +157,14 @@ body {
   overflow-wrap: anywhere;
 }
 
-/* Phones: the flexible content columns use Tailwind `truncate` (single-line
-   ellipsis), which was clipping titles/messages. Any flex-filling text column
-   (it carries `min-w-0`) should WRAP to a new line instead. Fixed-width mono
-   labels (`shrink-0 w-[..]`) lack min-w-0, so they keep their tidy ellipsis. */
+/* Phones: nothing truncates. Tailwind `truncate` forces single-line ellipsis,
+   which was clipping titles, messages, and the fixed-width codename/label
+   columns. On a phone we'd rather wrap to a new line than hide text. */
 @media (max-width: 768px) {
-  .min-w-0.truncate {
-    white-space: normal;
-    overflow: visible;
-    text-overflow: clip;
+  .truncate {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
   }
 }
 
