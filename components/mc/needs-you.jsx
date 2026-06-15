@@ -1,3 +1,5 @@
+import { AlertCircle } from "lucide-react";
+
 function hrefFor(rel) {
   return "/p/" + rel.split("/").map(encodeURIComponent).join("/");
 }
@@ -32,7 +34,10 @@ export default function NeedsYou({ projects }) {
 
   return (
     <section className="soft-card p-5">
-      <h2 className="hud-label mb-1">Needs you</h2>
+      <h2 className="soft-title mb-2 flex items-center gap-2">
+        <AlertCircle size={18} strokeWidth={1.75} className="text-[var(--hot)]" aria-hidden />
+        Needs you
+      </h2>
       <ul className="flex flex-col divide-y divide-hud-border/40">
         {items.map((it, i) => (
           <li key={i}>

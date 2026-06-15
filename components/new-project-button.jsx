@@ -84,9 +84,9 @@ export default function NewProjectButton() {
         type="button"
         onClick={() => setOpen(true)}
         title="Scaffold a new project (creates folder + STATUS.md)"
-        className="hud-mono text-[10px] uppercase tracking-[0.16em] text-green/80 hover:text-green border border-green/40 hover:bg-green/10 rounded px-1.5 py-0.5 transition-colors shrink-0"
+        className="btn-soft btn-soft-ghost h-8 px-3 text-[13px] shrink-0"
       >
-        + new
+        + New
       </button>
       <Sheet open={open} onOpenChange={(v) => { setOpen(v); if (!v) reset(); }}>
         <SheetContent className="w-full sm:max-w-md p-0 flex flex-col">
@@ -147,7 +147,7 @@ export default function NewProjectButton() {
               </Field>
             </div>
 
-            {error && <p className="hud-mono text-[10px] text-hot">// {error}</p>}
+            {error && <p className="text-[12px] text-hot">{error}</p>}
           </form>
 
           <SheetFooter className="border-t border-hud-border flex-row justify-end gap-2">
@@ -155,17 +155,17 @@ export default function NewProjectButton() {
               type="button"
               onClick={() => { setOpen(false); reset(); }}
               disabled={busy}
-              className="h-8 rounded-lg border border-hud-border px-3 text-[11px] hud-mono uppercase tracking-[0.18em] text-hud-ink-dim hover:text-foreground disabled:opacity-40 transition-colors"
+              className="btn-soft btn-soft-ghost h-9 px-4 text-[13px]"
             >
-              cancel
+              Cancel
             </button>
             <button
               type="submit"
               onClick={submit}
               disabled={busy || !name.trim()}
-              className="h-8 rounded-lg border border-green/50 px-3 text-[11px] hud-mono uppercase tracking-[0.18em] text-green hover:bg-green/10 disabled:opacity-40 transition-colors"
+              className="btn-soft btn-soft-primary h-9 px-4 text-[13px]"
             >
-              {busy ? "…" : "create"}
+              {busy ? "…" : "Create"}
             </button>
           </SheetFooter>
         </SheetContent>
@@ -177,7 +177,7 @@ export default function NewProjectButton() {
 function Field({ label, children }) {
   return (
     <label className="flex flex-col gap-1.5">
-      <span className="hud-mono text-[10px] uppercase tracking-[0.18em] text-hud-ink-dim">
+      <span className="text-[12px] font-medium text-hud-ink-dim">
         {label}
       </span>
       {children}

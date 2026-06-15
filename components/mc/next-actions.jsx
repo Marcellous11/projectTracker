@@ -48,7 +48,7 @@ export default function NextActions({ projects, limit = 8 }) {
       right={<span className="hud-num text-[11px] text-hud-ink-dim">{items.length} queued</span>}
     >
       {items.length === 0 ? (
-        <p className="hud-mono text-[11px] text-hud-ink-dim">// no next actions on record</p>
+        <p className="text-[13px] text-hud-ink-dim">No next actions on record</p>
       ) : (
         <ul className="flex flex-col">
           {items.map((p) => {

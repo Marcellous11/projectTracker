@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { GitPullRequest, ListChecks, Clock3 } from "lucide-react";
 
 function hrefFor(rel) {
   return "/p/" + rel.split("/").map(encodeURIComponent).join("/");
@@ -38,16 +39,31 @@ export default function ProjectCard({ p, itineraryCount = 0 }) {
         <span className={`size-2 shrink-0 rounded-full ${STATUS_DOT[p.status] || "bg-muted-foreground/40"}`} />
         <span className="min-w-0 flex-1 truncate font-semibold text-foreground">{p.name}</span>
         {g.ci?.state === "failure" && (
-          <span className="hud-mono shrink-0 text-[10px] text-hot">CI ✕</span>
+          <span className="shrink-0 text-[11px] font-medium text-hot">CI failing</span>
         )}
       </div>
       {summary && (
         <p className="mt-2 line-clamp-2 text-[13px] leading-snug text-muted-foreground">{summary}</p>
       )}
-      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 hud-mono text-[11px] text-hud-ink-dim">
-        {prs > 0 && <span>{prs} PR{prs > 1 ? "s" : ""}</span>}
-        {itineraryCount > 0 && <span>{itineraryCount} itinerary</span>}
-        {last && <span>active {last} ago</span>}
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[12px] text-hud-ink-dim">
+        {prs > 0 && (
+          <span className="inline-flex items-center gap-1.5">
+            <GitPullRequest size={14} strokeWidth={1.75} aria-hidden />
+            <span className="tabular-nums">{prs}</span> PR{prs > 1 ? "s" : ""}
+          </span>
+        )}
+        {itineraryCount > 0 && (
+          <span className="inline-flex items-center gap-1.5">
+            <ListChecks size={14} strokeWidth={1.75} aria-hidden />
+            <span className="tabular-nums">{itineraryCount}</span> itinerary
+          </span>
+        )}
+        {last && (
+          <span className="inline-flex items-center gap-1.5">
+            <Clock3 size={14} strokeWidth={1.75} aria-hidden />
+            {last} ago
+          </span>
+        )}
       </div>
     </Link>
   );

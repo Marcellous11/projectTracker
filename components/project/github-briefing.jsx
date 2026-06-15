@@ -1,9 +1,30 @@
-import { Pill, HexPill } from "@/components/hud/pill.jsx";
+import { Pill } from "@/components/hud/pill.jsx";
 import Module from "@/components/hud/module.jsx";
 import MetaEditor from "@/components/project/meta-editor.jsx";
-import { codename } from "@/lib/codename.js";
 import { relativeAge } from "@/lib/time.js";
 import { listItinerary } from "@/lib/itinerary.js";
+import { ListTree, GitCommitHorizontal, Gauge, ListChecks, StickyNote, ExternalLink } from "lucide-react";
+
+/**
+ * Render the AI "where it stands" summary. If it has line breaks, show clean
+ * bullet points (stripping leading "- "/"•"); otherwise fall back to a paragraph.
+ */
+function SummaryBody({ text }) {
+  const lines = String(text)
+    .split(/\r?\n/)
+    .map((l) => l.replace(/^\s*[-•*]\s+/, "").trim())
+    .filter(Boolean);
+  if (lines.length > 1) {
+    return (
+      <ul className="soft-bullets">
+        {lines.map((line, i) => (
+          <li key={i}>{line}</li>
+        ))}
+      </ul>
+    );
+  }
+  return <p className="text-[15px] leading-relaxed text-foreground/90">{text}</p>;
+}
 
 function statusTone(status) {
   if (status === "active") return "active";
@@ -21,7 +42,6 @@ function statusTone(status) {
 export default function GithubBriefing({ project, rel, meta }) {
   const gh = project?.github || null;
   const tone = statusTone(project?.status);
-  const displayCodename = meta?.codename || codename(rel);
   const url = gh?.url || null;
   const prs = Array.isArray(gh?.openPRs) ? gh.openPRs : [];
   const commits = (Array.isArray(gh?.recentCommits) ? gh.recentCommits : []).slice(0, 5);
@@ -34,8 +54,7 @@ export default function GithubBriefing({ project, rel, meta }) {
       {/* 1 — HEADER */}
       <section className="flex flex-col gap-3 pb-4 border-b border-hud-border">
         <div className="flex flex-wrap items-center gap-3">
-          <HexPill tone={tone} className="shrink-0">{displayCodename}</HexPill>
-          <h1 className="hud-mono tracking-tight text-2xl truncate min-w-0">
+          <h1 className="text-2xl font-semibold tracking-tight truncate min-w-0">
             {project?.name || "Untitled"}
           </h1>
           <div className="flex items-center gap-2 ml-auto">
@@ -45,9 +64,10 @@ export default function GithubBriefing({ project, rel, meta }) {
                 href={url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="h-7 inline-flex items-center rounded-lg border border-hud-border px-2.5 text-[10px] hud-mono uppercase tracking-[0.18em] text-hud-ink-dim hover:text-foreground hover:border-hud-border-strong transition-colors"
+                className="btn-soft btn-soft-ghost h-8 px-3 text-[13px]"
               >
-                View on GitHub ↗
+                <ExternalLink size={14} strokeWidth={1.75} aria-hidden />
+                GitHub
               </a>
             )}
             <MetaEditor rel={rel} meta={meta} />
@@ -56,8 +76,8 @@ export default function GithubBriefing({ project, rel, meta }) {
       </section>
 
       {gh?.error && (
-        <Module title="SYNC" voice="briefing" caption="github-state snapshot">
-          <p className="hud-mono text-[11px] text-hot">// github sync error: {gh.error}</p>
+        <Module title="Sync" voice="briefing" caption="GitHub state snapshot">
+          <p className="text-[13px] text-hot">GitHub sync error: {gh.error}</p>
         </Module>
       )}
 
@@ -74,12 +94,12 @@ export default function GithubBriefing({ project, rel, meta }) {
       <ItineraryCard items={itinerary} />
 
       {/* 6 — NOTES */}
-      <Module title="NOTES" voice="briefing" caption="internal · saved to this project">
+      <Module title="Notes" voice="briefing" caption="Internal · saved to this project" icon={StickyNote}>
         {meta?.notes ? (
           <p className="text-[13px] whitespace-pre-wrap leading-relaxed">{meta.notes}</p>
         ) : (
-          <p className="hud-mono text-[11px] text-hud-ink-dim">
-            // no notes yet — use “edit meta” above to add some
+          <p className="text-[13px] text-hud-ink-dim">
+            No notes yet — use “edit meta” above to add some.
           </p>
         )}
       </Module>
@@ -87,20 +107,25 @@ export default function GithubBriefing({ project, rel, meta }) {
   );
 }
 
-/** WHERE IT STANDS — the most prominent, readable block. */
+/** Where it stands — the most prominent, readable block. Bulleted summary. */
 export function Summary({ aiSummary, fallback }) {
   const text = aiSummary || fallback;
   return (
-    <Module title="WHERE IT STANDS" voice="briefing" caption={aiSummary ? "AI summary · regenerated on sync" : "no summary on record"}>
-      <p className="text-[15px] leading-relaxed text-foreground/90">{text}</p>
+    <Module
+      title="Where it stands"
+      voice="briefing"
+      icon={ListTree}
+      caption={aiSummary ? "AI summary · regenerated on sync" : "No summary on record"}
+    >
+      <SummaryBody text={text} />
     </Module>
   );
 }
 
-/** RECENT COMMITS — last 5, message + relative date, each links to the commit. */
+/** Recent commits — last 5, message + relative date, each links to the commit. */
 export function RecentCommitsCard({ commits }) {
   return (
-    <Module title="RECENT COMMITS" voice="briefing" caption={`last ${commits.length} commits`}>
+    <Module title="Recent commits" voice="briefing" icon={GitCommitHorizontal} caption={`Last ${commits.length} commits`}>
       {commits.length ? (
         <ol className="flex flex-col divide-y divide-hud-border/40">
           {commits.map((c, i) => (
@@ -120,24 +145,24 @@ export function RecentCommitsCard({ commits }) {
           ))}
         </ol>
       ) : (
-        <p className="hud-mono text-[11px] text-hud-ink-dim">// no recent commits</p>
+        <p className="text-[13px] text-hud-ink-dim">No recent commits.</p>
       )}
     </Module>
   );
 }
 
-/** AT A GLANCE — one compact strip: itinerary count, open PRs. */
+/** At a glance — one compact strip: itinerary count, open PRs. */
 export function AtAGlance({ itineraryCount, prCount, prsUrl }) {
   return (
-    <Module title="AT A GLANCE" voice="briefing" caption="quick references">
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 hud-mono text-[12px]">
+    <Module title="At a glance" voice="briefing" icon={Gauge} caption="Quick references">
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[12px]">
         {itineraryCount != null && (
           <a
             href="/itinerary"
             className="inline-flex items-baseline gap-1.5 text-hud-ink-dim hover:text-foreground"
           >
             <span className="text-[15px] text-foreground tabular-nums">{itineraryCount}</span>
-            <span className="uppercase tracking-[0.14em] text-[10px]">itinerary</span>
+            <span>itinerary</span>
           </a>
         )}
         <a
@@ -146,17 +171,17 @@ export function AtAGlance({ itineraryCount, prCount, prsUrl }) {
           className="inline-flex items-baseline gap-1.5 text-hud-ink-dim hover:text-foreground"
         >
           <span className="text-[15px] text-foreground tabular-nums">{prCount}</span>
-          <span className="uppercase tracking-[0.14em] text-[10px]">open PRs</span>
+          <span>open PRs</span>
         </a>
       </div>
     </Module>
   );
 }
 
-/** ITINERARY — this project's open itinerary items (the per-project work log). */
+/** Itinerary — this project's open itinerary items (the per-project work log). */
 export function ItineraryCard({ items }) {
   return (
-    <Module title="ITINERARY" voice="briefing" caption="open items for this project">
+    <Module title="Itinerary" voice="briefing" icon={ListChecks} caption="Open items for this project">
       {items.length ? (
         <ol className="flex flex-col divide-y divide-hud-border/40">
           {items.map((it) => (
@@ -165,14 +190,14 @@ export function ItineraryCard({ items }) {
             </li>
           ))}
           <li className="pt-2">
-            <a href="/itinerary" className="hud-mono text-[10px] uppercase tracking-[0.14em] text-hud-ink-dim hover:text-foreground">
-              Open itinerary ↗
+            <a href="/itinerary" className="text-[12px] text-hud-ink-dim hover:text-foreground">
+              Open itinerary →
             </a>
           </li>
         </ol>
       ) : (
-        <a href="/itinerary" className="hud-mono text-[11px] text-hud-ink-dim hover:text-foreground">
-          // no itinerary items — capture one ↗
+        <a href="/itinerary" className="text-[13px] text-hud-ink-dim hover:text-foreground">
+          No itinerary items — capture one →
         </a>
       )}
     </Module>

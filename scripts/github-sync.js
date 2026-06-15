@@ -33,15 +33,18 @@ function loadPrevState() {
 }
 const PREV = loadPrevState();
 
-// Generate a 2-3 sentence "where it stands" summary by shelling out to the
-// cheap single-shot LLM helper (mm.sh). Never throws — returns null on any
+// Generate a bulleted "where it stands" summary by shelling out to the cheap
+// single-shot LLM helper (mm.sh). Never throws — returns null on any
 // failure/timeout/empty output so the sync always completes.
 function generateSummary(label, recentCommits) {
   return new Promise((resolve) => {
     const list = (recentCommits || []).slice(0, 12).map((c) => "- " + c.message).join("\n");
     if (!list) return resolve(null);
     const prompt =
-      "In 2-3 plain sentences, summarize where this software project stands for someone getting up to speed — what was recently worked on and the current focus. Be concrete and specific, no marketing fluff, no preamble. Project: " +
+      "Summarize where this software project stands for someone getting up to speed. " +
+      "Respond with 3-5 short bullet points, one line each, each starting with \"- \". " +
+      "Be concrete and specific — what was recently worked on and the current focus. " +
+      "No preamble, no marketing fluff, no closing line. Just the bullets. Project: " +
       label +
       ". Recent commits (newest first):\n" +
       list;

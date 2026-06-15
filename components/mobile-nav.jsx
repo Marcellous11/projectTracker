@@ -26,10 +26,10 @@ export default function MobileNav({ projects, total, root }) {
           className="flex items-center gap-2 rounded-md border border-hud-border px-3 py-1.5 text-sidebar-foreground/85 active:bg-sidebar-accent/60"
         >
           <span className="text-base leading-none">☰</span>
-          <span className="hud-mono text-[11px] uppercase tracking-[0.16em]">Roster</span>
+          <span className="text-[13px] font-medium">Projects</span>
         </button>
-        <span className="hud-mono text-[10px] uppercase tracking-[0.16em] text-hud-ink-dim">
-          {projects.length} nodes
+        <span className="text-[12px] text-hud-ink-dim">
+          {projects.length} projects
         </span>
       </div>
 
@@ -41,8 +41,8 @@ export default function MobileNav({ projects, total, root }) {
           />
           <div className="absolute inset-y-0 left-0 flex w-[84%] max-w-xs flex-col border-r border-hud-border shadow-2xl">
             <div className="flex items-center justify-between border-b border-hud-border bg-sidebar px-3 py-2">
-              <span className="hud-mono text-[11px] uppercase tracking-[0.2em] text-hud-ink-dim">
-                // Navigation
+              <span className="text-[13px] font-medium text-hud-ink-dim">
+                Navigation
               </span>
               <button
                 onClick={() => setOpen(false)}

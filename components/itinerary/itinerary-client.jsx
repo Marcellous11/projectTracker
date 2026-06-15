@@ -17,9 +17,9 @@ function fmtAge(ts) {
 }
 
 const STATUS_META = {
-  open: { label: "OPEN", cls: "text-green border-green/40" },
-  sent: { label: "SENT", cls: "text-[var(--color-blue)] border-[var(--color-blue)]/40" },
-  done: { label: "DONE", cls: "text-hud-ink-dim border-border" },
+  open: { label: "Open", cls: "text-green border-green/40" },
+  sent: { label: "Sent", cls: "text-[var(--color-blue)] border-[var(--color-blue)]/40" },
+  done: { label: "Done", cls: "text-hud-ink-dim border-border" },
 };
 
 export default function ItineraryClient({ initialItems, initialCounts, projects }) {
@@ -94,9 +94,7 @@ export default function ItineraryClient({ initialItems, initialCounts, projects 
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-5">
       <header className="flex flex-col gap-1">
-        <span className="hud-mono uppercase tracking-[0.22em] text-[10px] text-hud-label">
-          // ITINERARY
-        </span>
+        <span className="text-[13px] font-medium text-hud-label">Itinerary</span>
         <h1 className="text-xl font-semibold text-foreground">Today&rsquo;s capture queue</h1>
         <p className="text-sm text-muted-foreground">
           Jot what you want to work on as you browse. Tap the keyboard mic to dictate.
@@ -132,7 +130,7 @@ export default function ItineraryClient({ initialItems, initialCounts, projects 
           <button
             onClick={add}
             disabled={busy || !body.trim()}
-            className="min-h-10 rounded-lg bg-green/20 px-5 text-sm font-semibold text-green transition hover:bg-green/30 disabled:opacity-40"
+            className="btn-soft btn-soft-primary min-h-10 px-5"
           >
             Add
           </button>
@@ -148,7 +146,7 @@ export default function ItineraryClient({ initialItems, initialCounts, projects 
         <button
           onClick={sendAll}
           disabled={busy || openCount === 0}
-          className="min-h-10 rounded-lg bg-[var(--color-blue)]/20 px-4 text-sm font-semibold text-[var(--color-blue)] transition hover:bg-[var(--color-blue)]/30 disabled:opacity-40"
+          className="btn-soft btn-soft-blue min-h-10 px-4"
         >
           Send to Monday →
         </button>
@@ -185,15 +183,15 @@ export default function ItineraryClient({ initialItems, initialCounts, projects 
                   {it.body}
                 </p>
                 <div className="mt-1 flex flex-wrap items-center gap-2">
-                  <span className={`hud-mono rounded border px-1.5 py-0.5 text-[9px] uppercase tracking-wider ${meta.cls}`}>
+                  <span className={`rounded-full border px-2.5 py-0.5 text-[11px] ${meta.cls}`}>
                     {meta.label}
                   </span>
                   {projName && (
-                    <span className="hud-mono text-[10px] uppercase tracking-wider text-hud-ink-dim">
+                    <span className="text-[11px] text-hud-ink-dim">
                       {projName}
                     </span>
                   )}
-                  <span className="hud-mono text-[10px] text-hud-ink-dim">{fmtAge(it.created_at)}</span>
+                  <span className="text-[11px] text-hud-ink-dim">{fmtAge(it.created_at)}</span>
                 </div>
               </div>
               <button

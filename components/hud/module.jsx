@@ -17,6 +17,7 @@ export default function Module({
   className = "",
   bodyClassName = "",
   glow = null,
+  icon: Icon = null,
   children,
 }) {
   return (
@@ -36,11 +37,14 @@ export default function Module({
     >
       {(title || right) && (
         <header className="hud-module-header">
-          <div className="flex min-w-0 flex-col gap-0.5">
-            {title && <span className="hud-label truncate">{title}</span>}
-            {caption && (
-              <span className="hud-mono text-[10px] text-hud-ink-dim truncate">{caption}</span>
-            )}
+          <div className="flex min-w-0 items-center gap-2">
+            {Icon && <Icon size={17} strokeWidth={1.75} className="shrink-0 text-green" aria-hidden />}
+            <div className="flex min-w-0 flex-col gap-0.5">
+              {title && <span className="soft-title truncate">{title}</span>}
+              {caption && (
+                <span className="text-[12px] text-hud-ink-dim truncate">{caption}</span>
+              )}
+            </div>
           </div>
           {right && <div className="shrink-0 flex items-center gap-3">{right}</div>}
         </header>

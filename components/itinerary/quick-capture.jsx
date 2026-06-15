@@ -69,8 +69,8 @@ export default function QuickCapture({ projects = [] }) {
             style={{ paddingBottom: "calc(1rem + env(safe-area-inset-bottom))" }}
           >
             <div className="mb-2 flex items-center justify-between">
-              <span className="hud-mono text-[11px] uppercase tracking-[0.2em] text-hud-label">
-                // Quick capture
+              <span className="text-[14px] font-semibold text-foreground">
+                Quick capture
               </span>
               <button
                 onClick={() => setOpen(false)}
@@ -110,7 +110,7 @@ export default function QuickCapture({ projects = [] }) {
               <button
                 onClick={add}
                 disabled={busy || !body.trim()}
-                className="min-h-11 rounded-lg bg-green/20 px-5 text-sm font-semibold text-green transition disabled:opacity-40"
+                className="btn-soft btn-soft-primary min-h-11 px-5"
               >
                 {flash ? "Added ✓" : "Add"}
               </button>

@@ -27,7 +27,7 @@ export default async function CommitsFeed({ projects, limit = 20 }) {
       right={<span className="hud-num text-[11px] text-hud-ink-dim">{sorted.length}</span>}
     >
       {sorted.length === 0 ? (
-        <p className="hud-mono text-[11px] text-hud-ink-dim">// no commits in window</p>
+        <p className="text-[13px] text-hud-ink-dim">No commits in window</p>
       ) : (
         <ul className="grid gap-x-6 gap-y-1.5 md:grid-cols-2">
           {sorted.map((r, i) => (

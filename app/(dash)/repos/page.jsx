@@ -1,4 +1,5 @@
 import { getGithubState } from "@/lib/github-state.js";
+import { GitBranch } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -26,12 +27,12 @@ export default function ReposPage() {
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-4">
       <header className="flex flex-wrap items-baseline justify-between gap-2">
-        <div>
-          <span className="hud-mono uppercase tracking-[0.22em] text-[10px] text-hud-label">// REPOS</span>
-          <h1 className="text-xl font-semibold text-foreground">Live repo state</h1>
-        </div>
-        <span className="hud-mono text-[10px] text-hud-ink-dim">
-          {state.ok ? `synced ${ago(state.generatedAt)}` : "no sync yet"}
+        <h1 className="soft-title flex items-center gap-2 text-[20px]">
+          <GitBranch size={20} strokeWidth={1.75} className="text-green" aria-hidden />
+          Live repo state
+        </h1>
+        <span className="text-[12px] text-hud-ink-dim">
+          {state.ok ? `Synced ${ago(state.generatedAt)}` : "No sync yet"}
           {state.stale && state.ok ? " · stale" : ""}
         </span>
       </header>
@@ -47,20 +48,20 @@ export default function ReposPage() {
         {state.repos.map((r) => {
           const ci = CI_TONE[r.ci?.state || "none"] || CI_TONE.none;
           return (
-            <li key={r.repo} className="rounded-xl border border-hud-border bg-card/50 p-4">
+            <li key={r.repo} className="soft-card p-5">
               <div className="flex flex-wrap items-center gap-2">
                 <a href={r.url} target="_blank" rel="noreferrer" className="font-semibold text-foreground hover:text-green">
                   {r.label}
                 </a>
-                <span className="hud-mono text-[10px] uppercase tracking-wider text-hud-ink-dim">
+                <span className="rounded-full border border-hud-border px-2.5 py-0.5 text-[11px] text-hud-ink-dim">
                   {r.private ? "private" : "public"}
                 </span>
                 {r.project && (
-                  <span className="hud-mono text-[10px] uppercase tracking-wider text-[var(--color-blue)]">
+                  <span className="rounded-full border border-[var(--color-blue)]/40 px-2.5 py-0.5 text-[11px] text-[var(--color-blue)]">
                     local
                   </span>
                 )}
-                <span className="ml-auto hud-mono text-[10px] text-hud-ink-dim">
+                <span className="ml-auto text-[12px] text-hud-ink-dim">
                   pushed {ago(r.pushedAt)}
                 </span>
               </div>
@@ -80,11 +81,11 @@ export default function ReposPage() {
                       {r.lastCommit.message}
                     </a>
                   )}
-                  <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px]">
-                    <span className={`hud-mono rounded border px-1.5 py-0.5 uppercase tracking-wider ${ci}`}>
+                  <div className="mt-2 flex flex-wrap items-center gap-2 text-[12px]">
+                    <span className={`rounded-full border px-2.5 py-0.5 ${ci}`}>
                       CI {r.ci?.state || "none"}
                     </span>
-                    <span className="hud-mono text-hud-ink-dim">
+                    <span className="text-hud-ink-dim">
                       {r.openPRs?.length || 0} open PR{(r.openPRs?.length || 0) === 1 ? "" : "s"}
                     </span>
                     {r.defaultBranch && (

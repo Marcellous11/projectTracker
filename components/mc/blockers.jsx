@@ -27,7 +27,7 @@ export default function Blockers({ projects }) {
       }
     >
       {items.length === 0 ? (
-        <p className="hud-mono text-[11px] text-hud-ink-dim">// all clear</p>
+        <p className="text-[13px] text-hud-ink-dim">All clear</p>
       ) : (
         <ul className="flex flex-col">
           {items.map((p) => (

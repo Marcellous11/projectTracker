@@ -1,6 +1,6 @@
-import { Pill, HexPill } from "@/components/hud/pill.jsx";
-import { codename } from "@/lib/codename.js";
+import { Pill } from "@/components/hud/pill.jsx";
 import MetaEditor from "@/components/project/meta-editor.jsx";
+import { ExternalLink } from "lucide-react";
 
 function fmtDate(d) {
   if (!d) return null;
@@ -32,7 +32,6 @@ function stalenessTone(d) {
 export default function BriefingHeader({ detail, rel, branch = null, lastSessionAt = null, meta = null, githubUrl = null }) {
   const tone = statusTone(detail?.status);
   const stTone = stalenessTone(detail?.staleDays);
-  const displayCodename = meta?.codename || codename(rel);
   const shortCwd = (() => {
     const dir = detail?.dir || "";
     const trimmed = dir.replace(/^\/Users\/[^/]+/, "~");
@@ -45,8 +44,7 @@ export default function BriefingHeader({ detail, rel, branch = null, lastSession
   return (
     <section className="flex flex-col gap-3 pb-4 border-b border-hud-border">
       <div className="flex flex-wrap items-center gap-3">
-        <HexPill tone={tone} className="shrink-0">{displayCodename}</HexPill>
-        <h1 className="hud-mono tracking-tight text-2xl truncate min-w-0">{detail?.name || "Untitled"}</h1>
+        <h1 className="text-2xl font-semibold tracking-tight truncate min-w-0">{detail?.name || "Untitled"}</h1>
         <div className="flex items-center gap-2 ml-auto">
           <Pill tone={tone}>{detail?.status || "untracked"}</Pill>
           {detail?.priority && <Pill tone="done">{detail.priority}</Pill>}
@@ -60,21 +58,22 @@ export default function BriefingHeader({ detail, rel, branch = null, lastSession
               href={githubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="h-7 inline-flex items-center rounded-lg border border-hud-border px-2.5 text-[10px] hud-mono uppercase tracking-[0.18em] text-hud-ink-dim hover:text-foreground hover:border-hud-border-strong transition-colors"
+              className="btn-soft btn-soft-ghost h-8 px-3 text-[13px]"
             >
-              View on GitHub ↗
+              <ExternalLink size={14} strokeWidth={1.75} aria-hidden />
+              GitHub
             </a>
           )}
           <MetaEditor rel={rel} meta={meta} />
         </div>
       </div>
 
-      {/* Coordinate-style caption: branch · short-cwd · last contact */}
-      <div className="hud-mono text-[11px] text-hud-ink-dim flex flex-wrap items-center gap-x-4 gap-y-1">
-        <span>BRANCH <span className="text-foreground/80">{branch || "HEAD"}</span></span>
-        <span>PATH <span className="text-foreground/80">{shortCwd}</span></span>
-        <span>LAST WORKED <span className="text-foreground/80">{fmtDate(detail?.lastWorked) || "—"}</span></span>
-        <span>LAST CONTACT <span className="text-foreground/80">{lastContact}</span></span>
+      {/* Quiet meta caption: branch · path · last worked. SHAs/paths stay mono. */}
+      <div className="text-[12px] text-hud-ink-dim flex flex-wrap items-center gap-x-4 gap-y-1">
+        <span>Branch <span className="hud-mono text-foreground/80">{branch || "HEAD"}</span></span>
+        <span>Path <span className="hud-mono text-foreground/80">{shortCwd}</span></span>
+        <span>Last worked <span className="text-foreground/80">{fmtDate(detail?.lastWorked) || "—"}</span></span>
+        <span>Last contact <span className="hud-mono text-foreground/80">{lastContact}</span></span>
       </div>
     </section>
   );
