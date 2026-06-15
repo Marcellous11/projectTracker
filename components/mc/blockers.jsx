@@ -34,7 +34,7 @@ export default function Blockers({ projects }) {
             <li key={p.rel}>
               <Link
                 href={`/p/${p.rel.split("/").map(encodeURIComponent).join("/")}`}
-                className="flex items-start gap-3 py-2 pl-3 pr-2 -mx-2 rounded transition-opacity hover:bg-hot/5"
+                className="mc-stack flex items-start gap-3 py-2 pl-3 pr-2 -mx-2 rounded transition-opacity hover:bg-hot/5"
               >
                 <span className="mt-1.5 inline-block h-3 w-[2px] bg-hot shrink-0 hud-pulse" aria-hidden />
                 <span className="hud-mono text-[10px] text-hot shrink-0 w-[88px] truncate uppercase tracking-wider">

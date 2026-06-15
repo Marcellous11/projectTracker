@@ -34,7 +34,7 @@ export default async function CommitsFeed({ projects, limit = 20 }) {
             <li key={i}>
               <Link
                 href={`/p/${r.rel.split("/").map(encodeURIComponent).join("/")}`}
-                className="flex items-baseline gap-3 py-1 px-2 -mx-2 rounded transition-colors hover:bg-foreground/5"
+                className="mc-stack flex items-baseline gap-3 py-1 px-2 -mx-2 rounded transition-colors hover:bg-foreground/5"
               >
                 <span className="hud-mono text-[11px] text-green shrink-0 tabular-nums">
                   {r.commit.short}

@@ -143,6 +143,41 @@
   }
 }
 
+/* Mobile guard: nothing should be able to scroll the whole page sideways.
+   Wide widgets that legitimately need room scroll inside their own module. */
+html,
+body {
+  overflow-x: clip; /* clip (not hidden) so it doesn't break position: sticky */
+  max-width: 100%;
+}
+
+/* Break long unbroken tokens (paths, URLs, codenames) so they never push a
+   module past the screen edge. */
+body {
+  overflow-wrap: anywhere;
+}
+
+/* Phones, readable lists. Two different needs:
+   1. Flexible CONTENT columns (carry `min-w-0`) should WRAP to new lines so
+      titles/messages are never cut off.
+   2. The narrow fixed-width CODENAME labels (`shrink-0 tracking-wider`) should
+      NOT wrap into a cramped 80–90px box — let them size to their text on one
+      clean line (capped so they can't dominate the row). */
+@media (max-width: 768px) {
+  .min-w-0.truncate {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+  }
+  .shrink-0.tracking-wider {
+    width: auto !important;
+    max-width: 42% !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
 /* Rendered markdown (STATUS.md body, README) inside the detail panel. */
 .md-body {
   font-size: 0.875rem;
@@ -213,6 +248,8 @@
 /* Module shell — thin border with very subtle inner top highlight. */
 .hud-module {
   position: relative;
+  min-width: 0;
+  max-width: 100%;
   border: 1px solid var(--hud-border);
   border-radius: 6px;
   background:
@@ -379,3 +416,80 @@ textarea.hud-input { height: auto; }
  */
 .hud-voice-signals .hud-module-header > .hud-label::before { content: "// "; opacity: 0.7; }
 
+
+/* ──────────────────────────────────────────────────────────────────────────
+   MOBILE STANDARDS PASS (phones only — desktop HUD density untouched)
+   - 16px inputs so iOS Safari doesn't zoom on focus
+   - larger, more readable type (the HUD's tiny utility sizes scaled up)
+   - 44px tap targets for nav + controls (Apple HIG / Material minimum)
+   ────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  body { font-size: 15px; -webkit-text-size-adjust: 100%; }
+
+  /* Scale up the intentionally-tiny utility type. */
+  .text-\[9px\]  { font-size: 11px; }
+  .text-\[10px\] { font-size: 12px; }
+  .text-\[11px\] { font-size: 13px; }
+  .text-\[12px\] { font-size: 14px; }
+  .text-\[13px\] { font-size: 15px; }
+  .hud-label { font-size: 11px; letter-spacing: 0.14em; }
+
+  /* Inputs at 16px (prevents the focus-zoom) and tall enough to tap. */
+  input, select, textarea, .hud-input {
+    font-size: 16px !important;
+    min-height: 44px;
+  }
+  textarea, textarea.hud-input { min-height: 76px; }
+
+  /* Comfortable tap targets for navigation, filter chips, and tabs. */
+  aside nav a { min-height: 44px; align-items: center; }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding-inline: 0.7rem;
+    font-size: 12px;
+  }
+  [data-slot="tabs-trigger"] { min-height: 42px; }
+
+  /* A little more breathing room inside cards/modules. */
+  .hud-module-body { padding: 14px; }
+  .hud-module-header { min-height: 44px; }
+
+  /* Clean tap feedback (no grey flash, components show their own active state). */
+  a, button, [role="tab"], select { -webkit-tap-highlight-color: transparent; }
+}
+
+/* Grid/flex columns must be allowed to shrink below their content width, or a
+   wide child stretches the whole module off the right edge of the screen
+   (grid & flex items default to min-width:auto). Applies on every size — this
+   is correct layout hygiene, not just a mobile patch. */
+main .grid > *,
+main .flex > * {
+  min-width: 0;
+}
+
+/* Phones: module list rows stack — the content paragraph gets its own full
+   width line, with the accompanying meta (codename, age, sha) pinned above it.
+   `.mc-stack` is added to the row containers in the mc/* modules. */
+@media (max-width: 768px) {
+  .mc-stack {
+    flex-wrap: wrap;
+    align-items: baseline;
+    row-gap: 2px;
+    column-gap: 0.5rem;
+  }
+  .mc-stack > .min-w-0 {
+    flex-basis: 100%;
+    width: 100%;
+    order: 2; /* push the paragraph below the meta items */
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+  /* On the meta line the codename now has room — don't cap it. */
+  .mc-stack .tracking-wider {
+    max-width: none !important;
+    width: auto !important;
+  }
+}

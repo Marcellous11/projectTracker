@@ -33,7 +33,7 @@ export default function StaleProjects({ projects }) {
               <li key={p.rel}>
                 <Link
                   href={`/p/${p.rel.split("/").map(encodeURIComponent).join("/")}`}
-                  className="flex items-baseline gap-3 py-1.5 pl-2 pr-1 -mx-2 rounded transition-opacity hover:bg-foreground/5"
+                  className="mc-stack flex items-baseline gap-3 py-1.5 pl-2 pr-1 -mx-2 rounded transition-opacity hover:bg-foreground/5"
                 >
                   <span className={`hud-num text-[14px] shrink-0 w-9 text-right ${tone}`}>
                     {p.staleDays}d

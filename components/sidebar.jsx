@@ -29,62 +29,6 @@ function staleTone(days) {
   return "text-foreground";
 }
 
-function pidAgeLabel(startedAt) {
-  if (!startedAt) return "";
-  const ms = Date.now() - +new Date(startedAt);
-  if (!Number.isFinite(ms) || ms < 0) return "";
-  const min = Math.round(ms / 60000);
-  if (min < 60) return `${min}m`;
-  const hr = Math.round(min / 60);
-  return `${hr}h`;
-}
-
-function PulseDot({ pulse, status }) {
-  // Tool: Claude paused on a tool call (e.g. Bash, Read). Pulsing amber.
-  // Takes precedence over the other live states because it's the most
-  // actionable signal — Claude is doing work right now.
-  if (pulse?.processOpen && pulse?.streamState === "tool") {
-    return (
-      <span
-        className="inline-block size-1.5 rounded-full bg-warm hud-pulse-tool shrink-0"
-        title={`Claude is running a tool call${pulse.pid ? ` · pid ${pulse.pid}` : ""}`}
-      />
-    );
-  }
-  // Responding: Claude just streamed in a response (last write < 5s).
-  // Same pulsing-green as the original "actively typing" indicator.
-  if (pulse?.liveNow || (pulse?.processOpen && pulse?.streamState === "responding")) {
-    return (
-      <span
-        className="inline-block size-1.5 rounded-full bg-green hud-pulse-live shrink-0"
-        title="Claude session active now"
-      />
-    );
-  }
-  // Idle: process open, no recent activity → solid green (steady, no pulse).
-  if (pulse?.idle) {
-    const age = pidAgeLabel(pulse.processStartedAt);
-    return (
-      <span
-        className="inline-block size-1.5 rounded-full bg-green shrink-0"
-        title={`Claude session open · idle${pulse.pid ? ` · pid ${pulse.pid}` : ""}${age ? ` · ${age}` : ""}`}
-      />
-    );
-  }
-  // Recent: JSONL written within 24h but process not open → blue.
-  if (pulse?.recent) {
-    return (
-      <span
-        className="inline-block size-1.5 rounded-full bg-[var(--color-blue)]/70 shrink-0"
-        title={`Recent Claude session — ${pulse.lastActiveAt ?? ""}`}
-      />
-    );
-  }
-  return (
-    <span className="inline-block size-1.5 rounded-full bg-muted-foreground/15 shrink-0" />
-  );
-}
-
 function FilterChip({ value, active, onClick, children }) {
   return (
     <button
@@ -105,7 +49,7 @@ function FilterChip({ value, active, onClick, children }) {
   );
 }
 
-export default function Sidebar({ projects, total, root }) {
+export default function Sidebar({ projects, total, root, variant = "desktop", onNavigate }) {
   const pathname = usePathname();
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState("all"); // "all" | "active" | "blocked" | "stale"
@@ -121,11 +65,15 @@ export default function Sidebar({ projects, total, root }) {
     });
   }, [projects, q, filter]);
 
-  const liveCount = projects.filter((p) => p.pulse?.liveNow).length;
-  const idleCount = projects.filter((p) => p.pulse?.idle).length;
+  // Desktop: a sticky left rail, hidden on small screens (the mobile drawer
+  // renders this same component with variant="drawer"). Drawer: fill its host.
+  const asideClass =
+    variant === "drawer"
+      ? "flex h-full w-full flex-col bg-sidebar"
+      : "hidden md:flex sticky top-9 h-[calc(100dvh-2.25rem)] w-64 shrink-0 flex-col border-r border-hud-border bg-sidebar/70 backdrop-blur";
 
   return (
-    <aside className="sticky top-9 flex h-[calc(100dvh-2.25rem)] w-64 shrink-0 flex-col border-r border-hud-border bg-sidebar/70 backdrop-blur">
+    <aside className={asideClass}>
       <div className="flex flex-col gap-2 border-b border-hud-border px-3 py-3">
         <div className="flex items-center justify-between gap-2">
           <span className="hud-label">// ROSTER</span>
@@ -151,7 +99,7 @@ export default function Sidebar({ projects, total, root }) {
         </div>
       </div>
 
-      <nav className="flex-1 overflow-y-auto py-2">
+      <nav className="flex-1 overflow-y-auto py-2" onClick={() => onNavigate?.()}>
         <Link
           href="/"
           prefetch={false}
@@ -183,45 +131,31 @@ export default function Sidebar({ projects, total, root }) {
           <span className="hud-num text-[10px] text-hud-ink-dim">{total}</span>
         </Link>
         <Link
-          href="/clients"
+          href="/itinerary"
           prefetch={false}
           className={cn(
             "mx-2 mb-1 flex items-center justify-between gap-2 rounded px-2 py-1.5 transition-colors",
-            pathname === "/clients" || pathname?.startsWith("/clients/")
+            pathname === "/itinerary" || pathname?.startsWith("/itinerary/")
               ? "bg-sidebar-accent text-sidebar-accent-foreground"
               : "text-sidebar-foreground/65 hover:bg-sidebar-accent/60"
           )}
         >
           <span className="hud-mono uppercase tracking-[0.16em] text-[10px]">
-            CLIENTS
+            ITINERARY
           </span>
         </Link>
         <Link
-          href="/time"
-          prefetch={false}
-          className={cn(
-            "mx-2 mb-1 flex items-center justify-between gap-2 rounded px-2 py-1.5 transition-colors",
-            pathname === "/time" || pathname?.startsWith("/time/")
-              ? "bg-sidebar-accent text-sidebar-accent-foreground"
-              : "text-sidebar-foreground/65 hover:bg-sidebar-accent/60"
-          )}
-        >
-          <span className="hud-mono uppercase tracking-[0.16em] text-[10px]">
-            TIME
-          </span>
-        </Link>
-        <Link
-          href="/news"
+          href="/repos"
           prefetch={false}
           className={cn(
             "mx-2 mb-2 flex items-center justify-between gap-2 rounded px-2 py-1.5 transition-colors",
-            pathname === "/news" || pathname?.startsWith("/news/")
+            pathname === "/repos" || pathname?.startsWith("/repos/")
               ? "bg-sidebar-accent text-sidebar-accent-foreground"
               : "text-sidebar-foreground/65 hover:bg-sidebar-accent/60"
           )}
         >
           <span className="hud-mono uppercase tracking-[0.16em] text-[10px]">
-            NEWS
+            REPOS
           </span>
         </Link>
 
@@ -248,7 +182,6 @@ export default function Sidebar({ projects, total, root }) {
                     dim && !active && "opacity-55"
                   )}
                 >
-                  <PulseDot pulse={p.pulse} status={p.status} />
                   <span className="flex-1 min-w-0 flex flex-col gap-0.5 leading-tight">
                     <span className="truncate text-[12px]">{p.name}</span>
                     <span
@@ -274,20 +207,6 @@ export default function Sidebar({ projects, total, root }) {
 
       <div className="border-t border-hud-border px-3 py-3 pb-4 hud-mono text-[10px] text-hud-ink-dim flex items-center justify-between">
         <span>// SHOWING {filtered.length}/{projects.length}</span>
-        <span className="flex items-center gap-3">
-          {liveCount > 0 && (
-            <span className="flex items-center gap-1 text-green">
-              <span className="inline-block size-1 rounded-full bg-green hud-pulse" />
-              {liveCount} live
-            </span>
-          )}
-          {idleCount > 0 && (
-            <span className="flex items-center gap-1 text-green/80">
-              <span className="inline-block size-1 rounded-full bg-green" />
-              {idleCount} idle
-            </span>
-          )}
-        </span>
       </div>
     </aside>
   );

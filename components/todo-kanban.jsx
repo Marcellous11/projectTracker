@@ -38,7 +38,7 @@ function TodoRow({ item, idx, col, showProject, isDragging, onDragStart, onDragE
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
       onClick={onOpen}
-      className={`flex items-start gap-2 py-1 pl-2 border-l-2 ${col.left} ${
+      className={`mc-stack flex items-start gap-2 py-1 pl-2 border-l-2 ${col.left} ${
         col.key === "done" ? "opacity-65" : ""
       } ${isDragging ? "opacity-40" : ""} cursor-grab active:cursor-grabbing select-none hover:bg-foreground/[0.03]`}
     >

@@ -1,19 +1,16 @@
 import path from "node:path";
 import { promises as fs } from "node:fs";
 import { notFound } from "next/navigation";
-import { projectsRoot, getScannedProjects } from "@/lib/scan.js";
+import { projectsRoot } from "@/lib/scan.js";
 import { getProjectDetail } from "@/lib/detail.js";
 import { getProjectActivity, getDailyActivity } from "@/lib/activity.js";
-import { getSessionsByProject } from "@/lib/sessions.js";
 import { getMeta } from "@/lib/project-meta.js";
-import { listClients } from "@/lib/clients.js";
 import { countOutdated } from "@/lib/external/npm-versions.js";
 import { getXkcd } from "@/lib/external/xkcd.js";
 
 import BriefingHeader from "@/components/project/header.jsx";
 import Vitals from "@/components/project/vitals.jsx";
 import Timeline from "@/components/project/timeline.jsx";
-import SessionsList from "@/components/project/sessions-list.jsx";
 import Velocity from "@/components/project/velocity.jsx";
 import Focus from "@/components/project/focus.jsx";
 import RecentlyDone from "@/components/project/recently-done.jsx";
@@ -22,7 +19,6 @@ import Notes from "@/components/project/notes.jsx";
 import Module from "@/components/hud/module.jsx";
 import TodoKanban from "@/components/todo-kanban.jsx";
 import AddTodo from "@/components/add-todo.jsx";
-import PromptPanel from "@/components/claude-prompt/prompt-panel.jsx";
 
 export const dynamic = "force-dynamic";
 
@@ -37,21 +33,14 @@ export default async function BriefingPage({ params }) {
   const within = resolved === root || resolved.startsWith(root + path.sep);
   if (!within) notFound();
 
-  // Run heavy fetches in parallel — getScannedProjects is cache()d so the
-  // layout's call is reused here.
-  const [detail, projects, activity, daily] = await Promise.all([
+  // Run heavy fetches in parallel.
+  const [detail, activity, daily] = await Promise.all([
     getProjectDetail(resolved),
-    getScannedProjects(),
     getProjectActivity(resolved, { sinceDays: 60, maxTotal: 80 }),
     getDailyActivity(60),
   ]);
 
   const meta = getMeta(rel);
-  const clients = listClients();
-
-  // Per-project daily activity for sparkline.
-  const ourProject = projects.find((p) => p?.dir === resolved);
-  const sessions = ourProject ? (await getSessionsByProject([ourProject]))[ourProject.rel] || [] : [];
 
   // Filter daily activity to just this project's events (commit + session counts only).
   // Cheap: rebuild from the activity feed we already have.
@@ -82,37 +71,27 @@ export default async function BriefingPage({ params }) {
   const [xkcdRes] = await Promise.allSettled([getXkcd()]);
   const xkcd = xkcdRes.status === "fulfilled" ? xkcdRes.value : null;
 
-  // Branch from latest session.
-  const latestSession = sessions.find((s) => s.gitBranch) || sessions[0];
-  const lastSessionAt = sessions.length ? sessions[0].lastActivityAt : null;
-
   return (
     <div className="flex flex-col gap-6">
       <BriefingHeader
         detail={detail}
         rel={rel}
-        branch={latestSession?.gitBranch || (detail?.git?.isRepo ? "HEAD" : null)}
-        lastSessionAt={lastSessionAt}
+        branch={detail?.git?.isRepo ? "HEAD" : null}
         meta={meta}
-        clients={clients}
       />
 
       <Vitals
         detail={detail}
-        sessions={sessions}
         commits7d={commits7d}
         dailyActivity={projDaily.slice(-14)}
         deps={deps}
       />
-
-      <PromptPanel cwd={resolved} projectSlug={rel} />
 
       <div className="grid gap-4 md:grid-cols-12">
         <div className="md:col-span-8">
           <Timeline events={activity} />
         </div>
         <div className="md:col-span-4 flex flex-col gap-4">
-          <SessionsList sessions={sessions} cwd={resolved} />
           <Velocity recentlyDone={detail.recentlyDone || []} commits={detail.git?.commits || []} />
         </div>
       </div>
