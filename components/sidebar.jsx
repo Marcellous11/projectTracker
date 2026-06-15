@@ -232,6 +232,20 @@ export default function Sidebar({ projects, total, root, variant = "desktop", on
           </span>
         </Link>
         <Link
+          href="/repos"
+          prefetch={false}
+          className={cn(
+            "mx-2 mb-1 flex items-center justify-between gap-2 rounded px-2 py-1.5 transition-colors",
+            pathname === "/repos" || pathname?.startsWith("/repos/")
+              ? "bg-sidebar-accent text-sidebar-accent-foreground"
+              : "text-sidebar-foreground/65 hover:bg-sidebar-accent/60"
+          )}
+        >
+          <span className="hud-mono uppercase tracking-[0.16em] text-[10px]">
+            REPOS
+          </span>
+        </Link>
+        <Link
           href="/news"
           prefetch={false}
           className={cn(

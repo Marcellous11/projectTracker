@@ -1,0 +1,12 @@
+{
+  "_comment": "Repos Command Central tracks live from GitHub. `project` ties a repo to a local ~/workspaces checkout (by rel) when one exists; null = GitHub-only (no local checkout). Edit freely.",
+  "repos": [
+    { "repo": "corporate-relocation-international/moving-assistant", "project": "moving-assistant", "label": "Moving Assistant" },
+    { "repo": "MCurtisTech/PII-Intelligence", "project": "PII-Intelligence", "label": "PII Intelligence" },
+    { "repo": "woodcab-factory/warehouse-module", "project": "warehouse-module", "label": "Warehouse Module" },
+    { "repo": "Marcellous11/womensConference", "project": null, "label": "Women's Conference" },
+    { "repo": "Marcellous11/invoke-crm", "project": null, "label": "Invoke CRM" },
+    { "repo": "Marcellous11/TimelineNews", "project": "TimelineNews", "label": "Timeline News" },
+    { "repo": "Marcellous11/projectTracker", "project": "projectTracker", "label": "Command Central" }
+  ]
+}
