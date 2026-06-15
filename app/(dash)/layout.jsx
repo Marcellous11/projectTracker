@@ -3,6 +3,7 @@ import { getPulseForProjects } from "@/lib/sessions.js";
 import { metaByRel } from "@/lib/project-meta.js";
 import Sidebar from "@/components/sidebar.jsx";
 import MobileNav from "@/components/mobile-nav.jsx";
+import QuickCapture from "@/components/itinerary/quick-capture.jsx";
 
 export const dynamic = "force-dynamic";
 
@@ -69,6 +70,7 @@ export default async function DashLayout({ children }) {
           {scanError ? <p className="text-sm text-hot">Scan failed: {scanError}</p> : children}
         </main>
       </div>
+      <QuickCapture projects={projects.map((p) => ({ rel: p.rel, name: p.name }))} />
     </>
   );
 }
