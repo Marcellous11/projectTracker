@@ -13,59 +13,97 @@ function ago(iso) {
   if (h < 24) return `${h}h`;
   return `${Math.round(h / 24)}d`;
 }
-const STATUS_DOT = {
-  active: "bg-green",
-  blocked: "bg-hot",
-  paused: "bg-warm",
-  done: "bg-muted-foreground",
-  untracked: "bg-muted-foreground/40",
+
+const STATUS_LABEL = {
+  active: "Active",
+  blocked: "Blocked",
+  paused: "Paused",
+  done: "Done",
+  untracked: "Untracked",
+};
+const STATUS_PILL = {
+  active: "pill-active",
+  blocked: "pill-blocked",
+  paused: "pill-paused",
+  done: "pill-done",
+  untracked: "pill-untracked",
 };
 
-// One project at a glance: name + status, the AI one-liner, a few live signals.
-// Tap → the project page.
+// One project at a glance: name + status + priority, the AI one-liner, a
+// progress bar (% to the finish line, from the STATUS To-do list), and a few
+// live signals. Tap → the project page.
 export default function ProjectCard({ p, itineraryCount = 0 }) {
   const g = p.github || {};
   const prs = (g.openPRs || []).length;
   const last = ago(g.pushedAt || g.lastCommit?.date);
   const summary = g.aiSummary || p.nextAction || null;
 
+  const c = p.todoCounts || {};
+  const total = (c.todo || 0) + (c.doing || 0) + (c.done || 0);
+  const isDone = p.status === "done";
+  // Done projects read as complete even if optional items linger below.
+  const pct = isDone ? 100 : total ? Math.round(((c.done || 0) / total) * 100) : null;
+
   return (
     <Link
       href={hrefFor(p.rel)}
       prefetch={false}
-      className="soft-card soft-card-hover block p-5"
+      className="soft-card soft-card-hover flex flex-col gap-3 p-5"
     >
+      <div className="flex items-start gap-2">
+        <span className="min-w-0 flex-1 truncate text-[15px] font-semibold text-foreground">{p.name}</span>
+        {p.priority && (
+          <span className={`prio prio-${p.priority} shrink-0`}>{p.priority}</span>
+        )}
+      </div>
+
       <div className="flex items-center gap-2">
-        <span className={`size-2 shrink-0 rounded-full ${STATUS_DOT[p.status] || "bg-muted-foreground/40"}`} />
-        <span className="min-w-0 flex-1 truncate font-semibold text-foreground">{p.name}</span>
+        <span className={`pill ${STATUS_PILL[p.status] || "pill-untracked"}`}>
+          {STATUS_LABEL[p.status] || "Untracked"}
+        </span>
         {g.ci?.state === "failure" && (
           <span className="shrink-0 text-[11px] font-medium text-hot">CI failing</span>
         )}
       </div>
-      {summary && (
-        <p className="mt-2 line-clamp-2 text-[13px] leading-snug text-muted-foreground">{summary}</p>
-      )}
-      <div className="mt-3 flex flex-col gap-1.5 text-[12px] text-hud-ink-dim">
-        {(prs > 0 || itineraryCount > 0) && (
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
-            {prs > 0 && (
-              <span className="inline-flex items-center gap-1.5">
-                <GitPullRequest size={14} strokeWidth={1.75} aria-hidden />
-                <span className="tabular-nums">{prs}</span> PR{prs > 1 ? "s" : ""}
-              </span>
-            )}
-            {itineraryCount > 0 && (
-              <span className="inline-flex items-center gap-1.5">
-                <ListChecks size={14} strokeWidth={1.75} aria-hidden />
-                <span className="tabular-nums">{itineraryCount}</span> itinerary
-              </span>
-            )}
+
+      {/* Progress — the finish-line meter. */}
+      {pct != null && (
+        <div className="flex flex-col gap-1.5">
+          <div className="flex items-center justify-between text-[11px]">
+            <span className="font-medium text-muted-foreground">
+              {isDone ? "Complete" : "Progress"}
+            </span>
+            <span className="hud-num font-semibold text-foreground">
+              {pct}%{!isDone && total ? <span className="text-muted-foreground"> · {c.done || 0}/{total}</span> : null}
+            </span>
           </div>
+          <div className="cc-bar">
+            <span className="cc-bar-fill" data-done={isDone ? "true" : "false"} style={{ width: `${pct}%` }} />
+          </div>
+        </div>
+      )}
+
+      {summary && (
+        <p className="line-clamp-2 text-[13px] leading-snug text-muted-foreground">{summary}</p>
+      )}
+
+      <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-1.5 pt-1 text-[12px] text-hud-ink-dim">
+        {prs > 0 && (
+          <span className="inline-flex items-center gap-1.5">
+            <GitPullRequest size={14} strokeWidth={1.75} aria-hidden />
+            <span className="tabular-nums">{prs}</span> PR{prs > 1 ? "s" : ""}
+          </span>
+        )}
+        {itineraryCount > 0 && (
+          <span className="inline-flex items-center gap-1.5">
+            <ListChecks size={14} strokeWidth={1.75} aria-hidden />
+            <span className="tabular-nums">{itineraryCount}</span> itinerary
+          </span>
         )}
         {last && (
           <span className="inline-flex items-center gap-1.5">
             <Clock3 size={14} strokeWidth={1.75} aria-hidden />
-            Active {last} ago
+            {last} ago
           </span>
         )}
       </div>

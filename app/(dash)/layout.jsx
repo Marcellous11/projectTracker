@@ -38,6 +38,9 @@ export default async function DashLayout({ children }) {
 
   return (
     <>
+      {/* Ambient animated background. Swap the modifier to change the motion:
+          cc-bg-aurora (default) · cc-bg-grid · cc-bg-beam */}
+      <div className="cc-bg cc-bg-aurora" aria-hidden />
       <MobileNav projects={projects} total={total} root={root} />
       <div className="flex min-h-[calc(100dvh-2.25rem)]">
         <Sidebar projects={projects} total={total} root={root} />

@@ -70,7 +70,7 @@ export default function Sidebar({ projects, total, root, variant = "desktop", on
   const asideClass =
     variant === "drawer"
       ? "flex h-full w-full flex-col bg-sidebar"
-      : "hidden md:flex sticky top-9 h-[calc(100dvh-2.25rem)] w-64 shrink-0 flex-col border-r border-hud-border bg-sidebar/70 backdrop-blur";
+      : "hidden md:flex sticky top-9 h-[calc(100dvh-2.25rem)] w-64 shrink-0 flex-col border-r border-sidebar-border bg-sidebar";
 
   return (
     <aside className={asideClass}>
