@@ -40,51 +40,52 @@
 }
 
 .dark {
-  /* Organic Soft UI — Option A (Dark Organic Dashboard). Calm, tactile,
-     nature-muted greens with soft elevation. */
-  --background: #172126;          /* deep */
-  --foreground: #E7ECE7;
-  --card: #202C30;                /* raised */
-  --card-foreground: #E7ECE7;
-  --popover: #232F33;
-  --popover-foreground: #E7ECE7;
-  --primary: #A9D99B;             /* green accent */
-  --primary-foreground: #16201B;
-  --secondary: #2B373A;           /* surface soft */
-  --secondary-foreground: #E7ECE7;
-  --muted: #2B373A;
-  --muted-foreground: #AAB5AD;    /* text secondary */
-  --accent: #2B373A;
-  --accent-foreground: #E7ECE7;
-  --destructive: #E0926E;
-  --border: #3B4749;              /* subtle */
-  --input: #3B4749;
+  /* Organic Soft UI v2 (Dark Organic Dashboard) — same nature-green identity,
+     but pushed for REAL contrast + hierarchy: deeper base, distinctly-lifted
+     cards, brighter text, stronger borders, and punchier status colors. */
+  --background: #0B1114;          /* deep base — darkest layer */
+  --foreground: #F4F8F5;          /* bright primary text */
+  --card: #212E34;               /* raised cards — clearly lift off the base */
+  --card-foreground: #F4F8F5;
+  --popover: #26343A;
+  --popover-foreground: #F4F8F5;
+  --primary: #B6E6A6;             /* green accent */
+  --primary-foreground: #0E1B12;
+  --secondary: #2C3A41;           /* surface soft — a step above card */
+  --secondary-foreground: #F4F8F5;
+  --muted: #2C3A41;
+  --muted-foreground: #B2C1BB;    /* text secondary — readable */
+  --accent: #2C3A41;
+  --accent-foreground: #F4F8F5;
+  --destructive: #F08A6E;
+  --border: #3F5057;              /* visible separators */
+  --input: #3F5057;
   --ring: #BFFFD7;                /* mint glow */
-  --sidebar: #1B2629;
-  --sidebar-foreground: #E7ECE7;
-  --sidebar-primary: #A9D99B;
-  --sidebar-primary-foreground: #16201B;
-  --sidebar-accent: #2B373A;
-  --sidebar-accent-foreground: #E7ECE7;
-  --sidebar-border: #3B4749;
+  --sidebar: #16232A;            /* distinct panel — NOT the same as the base bg */
+  --sidebar-foreground: #F4F8F5;
+  --sidebar-primary: #B6E6A6;
+  --sidebar-primary-foreground: #0E1B12;
+  --sidebar-accent: #30424B;     /* clearly-visible hover/active highlight */
+  --sidebar-accent-foreground: #F4F8F5;
+  --sidebar-border: #3F5057;
   --sidebar-ring: #BFFFD7;
 
-  --warm: #D8B77F;                /* warm sand */
-  --hot: #E9B38D;                 /* soft peach — alerts */
-  --green: #A9D99B;
+  --warm: #ECC15F;                /* amber — paused / in-progress (more saturated) */
+  --hot: #F0846B;                 /* clear coral — blocked / alert */
+  --green: #79D98C;               /* punchier healthy / active */
 
-  /* HUD chrome — softened for Organic Soft */
-  --hud-border:        rgba(255,255,255,0.08);
-  --hud-border-strong: rgba(255,255,255,0.18);
-  --hud-glow-green:    rgba(169,217,155,0.35);
-  --hud-glow-hot:      rgba(233,179,141,0.30);
-  --hud-glow-warm:     rgba(216,183,127,0.30);
-  --hud-glow-blue:     rgba(158,190,204,0.30);
-  --hud-ink-dim:       #AAB5AD;
-  --hud-label:         #C7D0C8;
+  /* HUD chrome — slightly stronger so structure reads */
+  --hud-border:        rgba(255,255,255,0.10);
+  --hud-border-strong: rgba(255,255,255,0.22);
+  --hud-glow-green:    rgba(121,217,140,0.38);
+  --hud-glow-hot:      rgba(240,132,107,0.32);
+  --hud-glow-warm:     rgba(236,193,95,0.32);
+  --hud-glow-blue:     rgba(130,185,208,0.32);
+  --hud-ink-dim:       #B3C0BA;
+  --hud-label:         #D2DCD5;
   --mint-glow:         #BFFFD7;
 
-  --color-blue:        #9EBECC;
+  --color-blue:        #82B9D0;
 }
 
 @theme inline {
@@ -603,4 +604,207 @@ main .flex > * {
   height: 6px;
   border-radius: 999px;
   background: var(--green);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   COMMAND CENTRAL v2 — contrast, hierarchy, data-viz (2026-06-29 redesign)
+   Higher-contrast, more legible, charts over bullet walls.
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* Stronger headings — clear hierarchy instead of everything one size/color. */
+.soft-title { font-size: 20px; font-weight: 650; color: var(--foreground); letter-spacing: -0.015em; }
+.cc-page-title {
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--foreground);
+  line-height: 1.1;
+}
+.cc-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+/* KPI tile — a compact stat block for the portfolio overview strip. */
+.kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  border: 1px solid var(--hud-border);
+  background:
+    linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.012)),
+    var(--card);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.28), inset 0 1px 1px rgba(255,255,255,0.05);
+}
+.kpi-value {
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--foreground);
+}
+.kpi-label { font-size: 12px; font-weight: 500; color: var(--muted-foreground); }
+.kpi-accent-green .kpi-value { color: var(--green); }
+.kpi-accent-warm  .kpi-value { color: var(--warm); }
+.kpi-accent-hot   .kpi-value { color: var(--hot); }
+.kpi-accent-blue  .kpi-value { color: var(--color-blue); }
+
+/* Progress bar — % to the finish line, from the STATUS To-do checklist. */
+.cc-bar {
+  position: relative;
+  height: 8px;
+  width: 100%;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.07);
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+}
+.cc-bar-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--green) 70%, #4FB874), var(--green));
+}
+.cc-bar-fill[data-done="true"] {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--color-blue) 70%, #5C97AE), var(--color-blue));
+}
+
+/* Stacked status-distribution bar — the portfolio mix at a glance. */
+.cc-stack {
+  display: flex;
+  height: 12px;
+  width: 100%;
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+}
+.cc-stack > span { display: block; height: 100%; }
+.cc-seg-active { background: var(--green); }
+.cc-seg-blocked { background: var(--hot); }
+.cc-seg-paused { background: var(--warm); }
+.cc-seg-done { background: var(--color-blue); }
+.cc-seg-untracked { background: var(--muted-foreground); opacity: 0.4; }
+
+/* Priority chip — small, high-signal, color-coded. */
+.prio {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+}
+.prio-high { color: var(--hot); }
+.prio-medium { color: var(--warm); }
+.prio-low { color: var(--muted-foreground); }
+
+/* Tiny legend swatch for the status mix. */
+.cc-dot { display: inline-block; width: 9px; height: 9px; border-radius: 999px; }
+
+/* ── Completion donut (overall % to finish line) ──────────────────────────── */
+.cc-donut { transform: rotate(-90deg); }
+.cc-donut-track { stroke: rgba(255,255,255,0.08); }
+.cc-donut-fill {
+  stroke: var(--green);
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 6px var(--hud-glow-green));
+  transition: stroke-dashoffset 600ms ease;
+}
+
+/* ── "Working on" ranked bars ─────────────────────────────────────────────── */
+.cc-rowbar { height: 7px; border-radius: 999px; background: rgba(255,255,255,0.07); overflow: hidden; }
+.cc-rowbar > span {
+  display: block; height: 100%; border-radius: 999px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--green) 65%, #4FB874), var(--green));
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ANIMATED BACKGROUND — ambient motion behind the dashboard.
+   Three options, switch by setting the class on the <div class="cc-bg ...">:
+     .cc-bg-aurora  (default) — slow drifting green/blue gradient blobs
+     .cc-bg-grid              — subtle scrolling tech grid + soft glow
+     .cc-bg-beam              — diagonal gradient sweep that breathes
+   ══════════════════════════════════════════════════════════════════════════ */
+.cc-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cc-bg * { animation: none !important; }
+}
+
+/* Option 1 — Aurora: two big soft blobs drifting on offset cycles. */
+.cc-bg-aurora::before,
+.cc-bg-aurora::after {
+  content: "";
+  position: absolute;
+  width: 60vw; height: 60vw;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.22;
+}
+.cc-bg-aurora::before {
+  background: radial-gradient(circle, var(--green), transparent 65%);
+  top: -15vw; left: -10vw;
+  animation: cc-drift-a 26s ease-in-out infinite;
+}
+.cc-bg-aurora::after {
+  background: radial-gradient(circle, var(--color-blue), transparent 65%);
+  bottom: -20vw; right: -12vw;
+  animation: cc-drift-b 32s ease-in-out infinite;
+}
+@keyframes cc-drift-a {
+  0%,100% { transform: translate(0,0) scale(1); }
+  50%     { transform: translate(8vw,6vw) scale(1.15); }
+}
+@keyframes cc-drift-b {
+  0%,100% { transform: translate(0,0) scale(1.1); }
+  50%     { transform: translate(-7vw,-5vw) scale(0.95); }
+}
+
+/* Option 2 — Grid: a faint scrolling grid with a green glow wash. */
+.cc-bg-grid::before {
+  content: "";
+  position: absolute; inset: -2px;
+  background-image:
+    linear-gradient(rgba(121,217,140,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(121,217,140,0.06) 1px, transparent 1px);
+  background-size: 46px 46px;
+  animation: cc-grid-scroll 24s linear infinite;
+}
+.cc-bg-grid::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: radial-gradient(120% 80% at 50% 0%, rgba(121,217,140,0.10), transparent 60%);
+}
+@keyframes cc-grid-scroll {
+  from { background-position: 0 0, 0 0; }
+  to   { background-position: 46px 46px, 46px 46px; }
+}
+
+/* Option 3 — Beam: a wide diagonal gradient sweep that slowly breathes. */
+.cc-bg-beam::before {
+  content: "";
+  position: absolute; inset: -25%;
+  background: linear-gradient(115deg, transparent 30%, rgba(121,217,140,0.12) 48%, rgba(130,185,208,0.10) 56%, transparent 72%);
+  animation: cc-beam 18s ease-in-out infinite;
+}
+@keyframes cc-beam {
+  0%,100% { transform: translateX(-12%) rotate(0deg); opacity: 0.7; }
+  50%     { transform: translateX(12%) rotate(2deg); opacity: 1; }
 }

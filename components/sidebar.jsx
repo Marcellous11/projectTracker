@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, ListChecks, GitBranch, CalendarRange } from "lucide-react";
+import { LayoutDashboard, ListChecks, CalendarRange } from "lucide-react";
 import NewProjectButton from "@/components/new-project-button.jsx";
 
 function hrefFor(rel) {
@@ -70,7 +70,7 @@ export default function Sidebar({ projects, total, root, variant = "desktop", on
   const asideClass =
     variant === "drawer"
       ? "flex h-full w-full flex-col bg-sidebar"
-      : "hidden md:flex sticky top-9 h-[calc(100dvh-2.25rem)] w-64 shrink-0 flex-col border-r border-hud-border bg-sidebar/70 backdrop-blur";
+      : "hidden md:flex sticky top-9 h-[calc(100dvh-2.25rem)] w-64 shrink-0 flex-col border-r border-sidebar-border bg-sidebar";
 
   return (
     <aside className={asideClass}>
@@ -103,12 +103,6 @@ export default function Sidebar({ projects, total, root, variant = "desktop", on
           icon={ListChecks}
           label="Itinerary"
           active={pathname === "/itinerary" || pathname?.startsWith("/itinerary/")}
-        />
-        <NavLink
-          href="/repos"
-          icon={GitBranch}
-          label="Repos"
-          active={pathname === "/repos" || pathname?.startsWith("/repos/")}
         />
         <NavLink
           href="/review"

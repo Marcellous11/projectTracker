@@ -128,7 +128,7 @@ function openPRs(repos) {
   for (const r of repos) {
     if (r.error || !Array.isArray(r.openPRs)) continue;
     for (const p of r.openPRs) {
-      out.push({ label: r.label || r.repo, number: p.number, title: p.title, draft: p.draft });
+      out.push({ label: r.label || r.repo, number: p.number, title: p.title, draft: p.draft, url: p.url });
     }
   }
   return out;

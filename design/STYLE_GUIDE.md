@@ -3,24 +3,34 @@
 **System name: Organic Soft UI** — a calm, tactile interface using soft elevation,
 muted organic colors, rounded surfaces, and nature-inspired data viz.
 
-Feel: **calm, premium, soft, organic, tactile, slightly futuristic.** Not flat,
-not corporate, not neon-cyberpunk. Physical cards, soft materials, glassy
-surfaces, nature-inspired data objects in a polished dashboard.
+Feel: **premium, tactile, organic, slightly futuristic — but with real contrast
+and a clear hierarchy.** Not flat, not corporate, not neon-cyberpunk. Physical
+cards, soft materials, nature-inspired data objects in a polished dashboard.
 
-## Chosen palette — Option A (Dark Organic Dashboard)
-| Role | Hex |
-| --- | --- |
-| Background Deep | `#172126` |
-| Background Raised (cards) | `#202C30` |
-| Surface Soft | `#2B373A` |
-| Border Subtle | `#3B4749` |
-| Text Primary | `#E7ECE7` |
-| Text Secondary | `#AAB5AD` |
-| Green Accent (primary/charts) | `#A9D99B` |
-| Mint Glow (focus/active) | `#BFFFD7` |
-| Warm Sand (2nd chart accent) | `#D8B77F` |
-| Soft Peach (alerts) | `#E9B38D` |
-| Soft Blue (signal) | `#9EBECC` |
+> **v2 (2026-06-29):** the original "calm, never harsh high-contrast" tuning read
+> as flat/same-color. v2 keeps the organic-green identity but pushes contrast:
+> deeper base, distinctly-lifted cards, brighter text, stronger borders, punchier
+> status colors, and **data-viz over bullet walls** (progress bars, KPI tiles,
+> status-distribution bar). Implemented in `app/globals.css` `.dark` block + the
+> `Command Central v2` utilities (`.kpi`, `.cc-bar`, `.cc-stack`, `.prio`).
+
+## Chosen palette — Option A v2 (Dark Organic Dashboard, high-contrast)
+| Role | Hex (v2) | was |
+| --- | --- | --- |
+| Background Deep | `#0E1518` | `#172126` |
+| Background Raised (cards) | `#1B262B` | `#202C30` |
+| Surface Soft | `#263338` | `#2B373A` |
+| Border | `#3A4A51` | `#3B4749` |
+| Text Primary | `#F3F7F4` | `#E7ECE7` |
+| Text Secondary | `#AEBDB7` | `#AAB5AD` |
+| Green Accent (primary) | `#B6E6A6` | `#A9D99B` |
+| Green (active/healthy, charts) | `#79D98C` | `#A9D99B` |
+| Mint Glow (focus/active) | `#BFFFD7` | — |
+| Amber (paused/in-progress) | `#ECC15F` | `#D8B77F` |
+| Coral (blocked/alert) | `#F0846B` | `#E9B38D` |
+| Soft Blue (signal/done) | `#82B9D0` | `#9EBECC` |
+
+Status color mapping: active→green, paused→amber, blocked→coral, done→blue, untracked→muted.
 
 (Option B = light "Soft Material" alt, kept in reserve.)
 

@@ -43,9 +43,9 @@ export default function BriefingHeader({ detail, rel, branch = null, lastSession
 
   return (
     <section className="flex flex-col gap-3 pb-4 border-b border-hud-border">
-      <div className="flex flex-wrap items-center gap-3">
-        <h1 className="text-2xl font-semibold tracking-tight truncate min-w-0">{detail?.name || "Untitled"}</h1>
-        <div className="flex items-center gap-2 ml-auto">
+      <div className="flex flex-col gap-3">
+        <h1 className="text-2xl font-semibold tracking-tight">{detail?.name || "Untitled"}</h1>
+        <div className="flex flex-wrap items-center gap-2">
           <Pill tone={tone}>{detail?.status || "untracked"}</Pill>
           {detail?.priority && <Pill tone="done">{detail.priority}</Pill>}
           {detail?.staleDays != null && (
